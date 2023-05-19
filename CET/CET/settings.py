@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "user",
+    "exam",
+    "reg",
+    "manager",
+    "marking"
 ]
 
 MIDDLEWARE = [
@@ -73,13 +78,28 @@ WSGI_APPLICATION = "CET.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+DATABASES = { 
+    'default': 
+    { 
+        'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
+        'NAME': 'cet', # 数据库名称
+        'HOST': '127.0.0.1', # 数据库地址，本机 ip 地址 127.0.0.1 
+        'PORT': 3306, # 端口 
+        'USER': 'root',  # 数据库用户名
+        'PASSWORD': '123456', # 数据库密码
+        'OPTIONS': {
+            'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
+            'charset': 'utf8mb4'
+        }
 
+    }  
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -103,9 +123,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans' #设置语言为中文
 
-TIME_ZONE = "UTC"
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai' #设置为中国时区
 
 USE_I18N = True
 
