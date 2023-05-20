@@ -11,4 +11,4 @@ run:
 ini:
 	@echo When firstly deploy, please enter the admin info: 
 	@echo 	name=root, email=any@qq.com, password=root
-	python3 manage.py createsuperuser
+	python manage.py createsuperuser
