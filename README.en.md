@@ -12,8 +12,8 @@ This is software engineering project in NKU.
         'USER': 'root',
         'PASSWORD': '123456'
 ```
-2. execute `make ini` and follow the tips
 3. execute `make run` to start
+4. execute `make ini` and follow the tips
 
 
 ## dev
