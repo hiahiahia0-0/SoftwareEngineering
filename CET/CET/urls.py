@@ -16,9 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , re_path
 from manager import views as mngr_views
-
+from reg import views as reg_views
+# urlpatterns = [
+#     path("admin/", admin.site.urls),
+#     re_path(r"^$", mngr_views.hello),
+#     path('test/', mngr_views.show_items, name='test'),
+# ]
 urlpatterns = [
     path("admin/", admin.site.urls),
     re_path(r"^$", mngr_views.hello),
     path('test/', mngr_views.show_items, name='test'),
+    path("reg_view/", reg_views.index),
+    path("reg_template_test/", reg_views.template_test),
+    path("reg_main/", reg_views.reg_main),
+    path('ConfirmRegState/', reg_views.ConfirmRegState, name='ConfirmRegState'),
 ]
