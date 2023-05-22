@@ -1,8 +1,8 @@
 from django.db import models
 
 class Student(models.Model):
-    id = models.AutoField(primary_key=True)
-    exam_number = models.IntegerField()
+    id = models.AutoField(primary_key=True) # 考号
+    self_number = models.IntegerField() # 身份证
     name = models.CharField(max_length=30)
     school = models.CharField(max_length=30)
     password = models.CharField(max_length=30)
