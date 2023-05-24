@@ -13,8 +13,10 @@ from typing import List, Optional,Tuple
 本文件功能：
     封装如下的数据库操作: ( * 代表已完成, - 代表未完成 )
     * user
-        * 学生的增删改查
-        * 老师的增删改查
+        * 学生的增删改查(主键)
+        * 学生查(通过手机号)
+        * 老师的增删改查(主键)
+        * 老师查(通过手机号)
     * exam
         * 题目的增删改查
         * 试卷的增删改查
@@ -59,6 +61,34 @@ def sys_log(msg, type):
 class user:
     def __init__(self):
         pass
+    
+    @staticmethod
+    def select_stu_by_phone(phone) -> Tuple[Optional[user_m.Student], int]:
+        try:
+            try:
+                stu =  user_m.Student.objects.get(phone=phone)
+            except user_m.Student.DoesNotExist:
+                sys_log('学生查询不存在', LOG_ERR)
+                return None ,NOT_EXIST
+            sys_log('学生查询成功', LOG_OK)
+            return stu , SUCCESS
+        except:
+            sys_log('学生查询失败', LOG_ERR)
+            return None,FAIL
+    
+    @staticmethod
+    def select_tea_by_phone(phone) -> Tuple[Optional[user_m.Teacher], int]:
+        try:
+            try:
+                tea =  user_m.Teacher.objects.get(phone=phone)
+            except user_m.Teacher.DoesNotExist:
+                sys_log('教师查询不存在', LOG_ERR)
+                return None,NOT_EXIST
+            sys_log('教师查询成功', LOG_OK)
+            return tea ,SUCCESS
+        except:
+            sys_log('教师查询失败', LOG_ERR)
+            return None,FAIL
 
     @staticmethod
     def select_stu_by_id(id) -> tuple[Optional[user_m.Student] , int]:
@@ -89,26 +119,46 @@ class user:
             return None, FAIL
 
     @staticmethod
-    def insert_stu(self_num: int, name: str, school: str, password: str, phone: str, email: str) -> int: # id是自增的，不用管
+    def insert_stu(self_num: int, name: str, school: str, password: str, phone: str, email: str) -> tuple[Optional[user_m.Student] , int] : # id是自增的，不用管
+        try:
+            check = user_m.Student.objects.get(phone=phone)
+            if check:
+                sys_log('学生已存在', LOG_ERR)
+                return None, DUPLICATE
+        except :
+            pass
+
         try:
             stu = user_m.Student(self_number=self_num, name=name, school=school, password=password, phone=phone, email=email)
             stu.save()
             sys_log('学生添加成功', LOG_OK)
-            return SUCCESS
-        except:
-            sys_log('学生添加失败', LOG_ERR)
-            return FAIL
+            return stu, SUCCESS
+        except Exception as e:
+            # 显示错误
+            # print(e)
+            sys_log('学生添加失败',LOG_ERR)
+            return None, FAIL
+
+
 
     @staticmethod
-    def insert_tea(name: str, phone: str, password: str) -> int: # id自增
+    def insert_tea(name: str, phone: str, password: str) -> tuple[Optional[user_m.Teacher] , int]: # id自增
+        try:
+            check = user_m.Teacher.objects.get(phone=phone)
+            if check:
+                sys_log('教师已存在', LOG_ERR)
+                return None, DUPLICATE
+        except:
+            pass
+        
         try:
             tea = user_m.Teacher(name=name, phone=phone, password=password)
             tea.save()
             sys_log('教师添加成功', LOG_OK)
-            return SUCCESS
+            return tea, SUCCESS
         except:
             sys_log('教师添加失败', LOG_ERR)
-            return FAIL
+            return None, FAIL
 
     @staticmethod
     def update_stu(id: int, name: str, school: str, password: str, phone: str, email: str) -> int:

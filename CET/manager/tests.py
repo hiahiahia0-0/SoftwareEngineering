@@ -9,18 +9,20 @@ from datetime import datetime
 class db_test(TestCase):
     def test_user_stu(self):
         db_operation.user.insert_stu(
-            1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
+            2, '张三', 'NKU', '123456', '18888888889', '123@qq.com')
         stu = db_operation.user_m.Student.objects.latest('id')
         db_operation.user.select_stu_by_id(stu.id)
+        db_operation.user.select_stu_by_phone(stu.phone)
         db_operation.user.update_stu(
             stu.id, '李四', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.user.delete_stu(stu.id)
 
     def test_user_tea(self):
-        db_operation.user.insert_tea('李四', '123456', '18888888888')
+        db_operation.user.insert_tea('李四', '18888888888','123456')
         tea = db_operation.user_m.Teacher.objects.latest('id')
         db_operation.user.select_tea_by_id(tea.id)
-        db_operation.user.update_tea(tea.id, '李5', '123456', '18888888888')
+        db_operation.user.select_tea_by_phone(tea.phone)
+        db_operation.user.update_tea(tea.id, '李5','18888888888', '123456')
         db_operation.user.delete_tea(tea.id)
 
     def test_exam_alle(self):
