@@ -21,14 +21,14 @@ class Exam(models.Model):
     id = models.AutoField(primary_key=True)
     date = models.DateField()
     place = models.CharField(max_length=30)
-    paper = models.ForeignKey(Paper, on_delete=models.CASCADE)
+    paper = models.ForeignKey(Paper, on_delete=models.SET_NULL,null=True)
     max_students = models.IntegerField()
 
 # 订单记录
 class ExamOrder(models.Model):
     id = models.AutoField(primary_key=True)
-    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
-    student = models.ForeignKey(user_models.Student, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.SET_NULL,null=True)
+    student = models.ForeignKey(user_models.Student, on_delete=models.SET_NULL,null=True)
     paid = models.BooleanField()
     payment = models.FloatField()
     pay_time = models.DateField(default=timezone.now)
