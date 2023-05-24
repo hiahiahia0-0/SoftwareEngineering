@@ -9,8 +9,8 @@
     <h2>欢迎访问CET考试系统，请登录平台查看详情</h2>
     <form method="post" action="">
         {% csrf_token %}
-        <label for="username">用户名:</label>
-        <input type="text" id="username" name="username" required><br>
+        <label for="account">账号(手机号):</label>
+        <input type="text" id="account" name="account" required><br>
         <label for="password">密码:</label>
         <input type="password" id="password" name="password" required><br>
         <button type="submit">登录</button>

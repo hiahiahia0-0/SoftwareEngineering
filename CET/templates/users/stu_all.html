@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CET考试系统学生界面</title>
+</head>
+<body>
+    <div class = "box1">
+        欢迎{{request.session.user_stu}}登录
+    </div>
+    <h1>CET考试系统学生界面</h1>
+     <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit">用户中心</button>
+    </form>
+    <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit">考试报名中心</button>
+    </form>
+    <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit">线上考试平台</button>
+    </form>
+    <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit">退出登录</button>
+    </form>
+</body>
+</html></html>

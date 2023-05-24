@@ -161,7 +161,7 @@ class user:
             return None, FAIL
 
     @staticmethod
-    def update_stu(id: int, name: str, school: str, password: str, phone: str, email: str) -> int:
+    def update_stu(self_number:str,name: str, school: str, password: str, phone: str, email: str,id: int) -> int:
         try:
             try:
                 stu = user_m.Student.objects.get(id=id)
@@ -169,6 +169,7 @@ class user:
                 sys_log('学生查询不存在', LOG_ERR)
                 return NOT_EXIST
             stu.name = name
+            stu.self_number = self_number
             stu.school = school
             stu.password = password
             stu.phone = phone
