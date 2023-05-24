@@ -20,7 +20,7 @@ from manager import db_operation as db
 '''
 
 def index(request):
-    return render(request,'index.html')
+    return render(request,'users/index.html')
 
 
 
@@ -35,7 +35,7 @@ def choose_sign(request):
         elif login_type == 'teacher':
             return redirect('tea_signin')  # 跳转到教师登录页面的URL名称
 
-    return render(request, 'index.html')
+    return render(request, 'users/index.html')
 #登录
 
 #教师登录
@@ -44,21 +44,21 @@ def tea_signin(request):
     if request.method == 'POST':
         id = request.POST.get('account')
         password = request.POST.get('password')
-        tea ,error  = db.db_get_tea_by_id(id)
+        tea ,error  = db.user.select_tea_by_id(id)
         if error == db.NOT_EXIST:
             # 报错信息，用户不存在
-            db.sys_log("用户不存在")
-            return render(request,'tea_signin.html', {'error_message':'用户不存在'})
+            db.sys_log("用户不存在",db.LOG_ERR)
+            return render(request,'users/tea_signin.html', {'error_message':'用户不存在'})
         elif tea != None and tea.password == password:
             # 登录成功，跳转到下一个用户信息页面
-            db.sys_log("教师登录成功")
+            db.sys_log("教师登录成功",db.LOG_OK)
             return redirect('tea_info')  # 跳转到用户信息页面的URL名称
         else:
             # 密码错误
-            db.sys_log("密码错误")
-            return render(request,'tea_signin.html', {'error_message':'密码错误'})
+            db.sys_log("密码错误",db.LOG_ERR)
+            return render(request,'users/tea_signin.html', {'error_message':'密码错误'})
 
-    return render(request,'tea_signin.html')
+    return render(request,'users/tea_signin.html')
 
 
 
@@ -98,17 +98,17 @@ def tea_signup(request):
         # 检验密码和确认密码是否一致
         if password != confirm_password:
             error_message = '两次输入的密码不一致'
-            return render(request, 'tea_signup.html', {'error_message': error_message})
+            return render(request, 'users/tea_signup.html', {'error_message': error_message})
 
-        if db.db_add_tea(username,phone,password) == db.SUCCESS:
+        if db.user.insert_tea(username,phone,password) == db.SUCCESS:
             # 注册成功，跳转到用户登录界面
             return redirect('tea_signin')  # 跳转到教师登录页面的URL名称
         else :
             # 注册失败
             error_message = '注册失败'
-            return render(request, 'tea_signup.html', {'error_message': error_message})
+            return render(request, 'users/tea_signup.html', {'error_message': error_message})
 
-    return render(request, 'tea_signup.html')
+    return render(request, 'users/tea_signup.html')
 
 #学生注册
 
