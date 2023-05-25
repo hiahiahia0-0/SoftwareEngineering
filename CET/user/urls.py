@@ -12,6 +12,10 @@ urlpatterns = [
     path('stu_signin', views.stu_signin, name='stu_signin'),
     path('tea_signup', views.tea_signup, name='tea_signup'),
     path('stu_signup', views.stu_signup, name='stu_signup'),
+    path('logout', views.logout, name='logout'),
+    path('stu_all', views.stu_all, name='stu_all'),
+    path('stu_info', views.stu_info, name='stu_info'),
+    path('mod_info_stu', views.mod_info_stu, name='mod_info_stu'),
 
 ]
 
