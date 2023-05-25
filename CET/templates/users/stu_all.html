@@ -9,21 +9,45 @@
         欢迎{{request.session.user_stu}}登录
     </div>
     <h1>CET考试系统学生界面</h1>
-     <form method="post" action="">
+     <form method="post" action="stu_info">
         {% csrf_token %}
         <button type="submit">用户中心</button>
     </form>
-    <form method="post" action="">
+    <form method="post" action="exam_registration">
         {% csrf_token %}
         <button type="submit">考试报名中心</button>
     </form>
-    <form method="post" action="">
+    <form method="post" action="online_exam">
         {% csrf_token %}
         <button type="submit">线上考试平台</button>
     </form>
-    <form method="post" action="">
+    <form method="post" action="logout">
         {% csrf_token %}
         <button type="submit">退出登录</button>
     </form>
+     <div class = "box2">
+        个人基本信息如下
+    </div>
+    <div class ="info-logo">
+        <div class="准考证号">
+            准考证号：{{info.id}}
+        </div>
+        <div class="身份证号 ">
+            身份证号：{{info.self_number}}
+        </div>
+        <div class="名字">
+            名字：{{info.name}}
+        </div>
+        <div class="学校">
+            学校：{{info.school}}
+        </div>
+        <div class="电话">
+            电话：{{info.phone}}
+        </div>
+        <div class="电子邮箱">
+            电子邮箱：{{info.email}}
+        </div>
+
+    </div>
 </body>
 </html></html>

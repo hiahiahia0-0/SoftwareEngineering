@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息修改</title>
+</head>
+<body>
+    <h1>个人信息修改</h1>
+    <form method="post" action="">
+        {% csrf_token %}
+        <label for="name">姓名:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="id_number">身份证号:</label>
+        <input type="text" id="id_number" name="id_number" readonly><br>
+
+        <label for="phone">手机号:</label>
+        <input type="text" id="phone" name="phone" required><br>
+
+        <label for="school">学校:</label>
+        <input type="text" id="school" name="school" required><br>
+
+        <label for="email">电子邮箱号:</label>
+        <input type="email" id="email" name="email" required><br>
+
+        <button type="submit">提交</button>
+    </form>
+
+    <p><a href="javascript:history.back()">返回上一页</a></p>
+</body>
+</html>

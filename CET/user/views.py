@@ -53,6 +53,10 @@ def tea_signin(request):
         elif tea != None and tea.password == password:
             # 登录成功，跳转到下一个用户信息页面
             db.sys_log("教师登录成功",db.LOG_OK)
+            # 会话：记录登陆人
+
+            request.session['user_stu'] = id  # 记录当前用户的身份id
+
             return redirect('tea_info')  # 跳转到用户信息页面的URL名称
         else:
             # 密码错误
@@ -76,7 +80,7 @@ def stu_signin(request):
         elif stu != None and stu.password == password:
             # 登录成功，跳转到下一个用户信息页面
             db.sys_log("学生登录成功",db.LOG_OK)
-            #会话：记录登陆人
+            # 会话：记录登陆人
             request.session['user_stu']=id #记录当前用户的身份id
             return redirect('stu_all')  # 跳转到用户信息页面的URL名称
         else:
@@ -135,10 +139,33 @@ def stu_signup(request):
     return render(request, 'users/stu_signup.html')
 
 # 学生信息界面
+
+# 找到当前活跃的学生
+def stu_active(request):
+    # return  student instance
+    uid = request.session.get('user_stu')
+    student_Set = Student.objects.filter(phone=uid)
+    if student_Set.count()==0:
+        return None
+    return student_Set[0]
+
+# 找到当前活跃的老师
+def tea_active(request):
+    # return  student instance
+    uid = request.session.get('user_tea')
+    teacher_Set = Teacher.objects.filter(phone=uid)
+    if teacher_Set.count()==0:
+        return None
+    return teacher_Set[0]
+
+
 # 新的一个界面：学生选择进入哪个子系统
+# 不管点哪个都退出登陆了？？？？
+
 def stu_all(request):
 
     if request.method == 'POST':
+
         login_type = request.POST.get('login_type')
         if login_type == '用户中心':
             return redirect('stu_info')  # 跳转到学生登录页面的URL名称
@@ -149,12 +176,29 @@ def stu_all(request):
             return redirect('exam_take')
         else:
             return redirect('logout')
-    return render(request, 'users/stu_all.html')
+    # 在当前页面显示学生信息
+    user = stu_active(request)
+    if not user:
+        return redirect('stu_signin')
+    info = {
+        "id" : user.id,
+        "self_number" : user.self_number,
+        "name": user.name,
+        "school": user.school,
+        "phone": user.phone,
+        "email": user.email,
 
+    }
+    context = {"info": info}
+    return render(request, 'users/stu_all.html', context)
+
+# def logout(request):
+#     return render(request, 'users/logout.html')
 # 退出登录
 def logout(request):
-    if request.method == 'POST':
-        return redirect('index')
+    # 删除当前cookie
+    if request.session.get("user_stu"):
+        del request.session["user_stu"]
     return render(request, 'users/logout.html')
 
 # 用户中心：进去之后是个人信息界面，左侧有几个选项：一个选项为修改个人信息，可以点击，点击后可以修改除身份证和名字以外的信息，
@@ -163,10 +207,26 @@ def logout(request):
 # 一个选项为历史考试：点进去有已经考完的试和对应的考试分数
 # 需要添加会话，来记录登录人名
 def stu_info(request):
-   stu_id = request.session.user_stu
+    # 在当前页面显示学生信息
+    user = stu_active(request)
+    if not user:
+        return redirect('stu_signin')
+    info = {
+        "id" : user.id,
+        "self_number" : user.self_number,
+        "name": user.name,
+        "school": user.school,
+        "phone": user.phone,
+        "email": user.email,
+
+    }
+    context = {"info": info}
+    return render(request, 'users/stu_info.html', context)
 
 
-
+# 修改个人信息
+def mod_info_stu(request):
+    return render(request, 'users/mod_info_stu.html')
 
 
 
@@ -175,3 +235,4 @@ def stu_info(request):
 
 
 # 新的一个界面：教师选择进入哪个子系统
+#教师的子系统分别有：教师个人信息，阅卷系统
