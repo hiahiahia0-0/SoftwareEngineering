@@ -4,7 +4,7 @@ from manager import models as manager_m
 # Create your views here.
 
 def hello(request):
-    return HttpResponse("<center><h1>Hello world ! </h1></center>")
+    return render(request, 'index.html')
 
 def add_item(request):
     if request.method == 'POST':
