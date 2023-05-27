@@ -161,7 +161,7 @@ class user:
             return None, FAIL
 
     @staticmethod
-    def update_stu(self_number:str,name: str, school: str, password: str, phone: str, email: str,id: int) -> int:
+    def update_stu(self_number:int,name: str, school: str, password: str, phone: str, email: str,id: int) -> int:
         try:
             try:
                 stu = user_m.Student.objects.get(id=id)
