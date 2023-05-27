@@ -14,8 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path , re_path
+from django.conf.urls import include
+from manager import views as mngr_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    re_path(r"^$", mngr_views.hello), # 支持正则表达式
+
+    # 下面为路由分发, 请各个模块按自己的前缀, 在自己的模块内的urls.py编写url路径
+    path("manager/", include("manager.urls",namespace="manager")),
+    path("exam/", include("exam.urls")),
+    path("reg/", include("reg.urls")),
+    path("marking/", include("marking.urls")),
+    path("user/", include("user.urls")),
 ]
