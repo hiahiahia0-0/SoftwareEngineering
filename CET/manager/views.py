@@ -4,7 +4,7 @@ from manager import models as manager_m
 # Create your views here.
 
 def hello(request):
-    return HttpResponse("<center><h1>Hello world ! </h1></center>")
+    return render(request, 'index.html')
 
 def add_item(request):
     if request.method == 'POST':
@@ -13,10 +13,10 @@ def add_item(request):
         item = manager_m.TestTable(name=name, test=test)
         item.save()
         print("Item added successfully")
-        return HttpResponse('Item added successfully')
+        return HttpResponse('<script>alert("Item added successfully")</script>')
     else:
         return render(request, 'test.html')
 
-def show_items(request):
+def test(request): # test function
     items = manager_m.TestTable.objects.all()
     return render(request, 'test.html', {'items': items})

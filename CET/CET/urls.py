@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , re_path
+from django.conf.urls import include
 from manager import views as mngr_views
 from reg import views as reg_views
 # urlpatterns = [
@@ -24,6 +25,7 @@ from reg import views as reg_views
 # ]
 urlpatterns = [
     path("admin/", admin.site.urls),
+<<<<<<< HEAD
     re_path(r"^$", mngr_views.hello),
     path('test/', mngr_views.show_items, name='test'),
     path("reg_view/", reg_views.index),
@@ -32,3 +34,14 @@ urlpatterns = [
     path('ConfirmRegState/', reg_views.ConfirmRegState, name='ConfirmRegState'),
     path('SelectSite/', reg_views.SelectSite, name='SelectSite')
 ]
+=======
+    re_path(r"^$", mngr_views.hello), # 支持正则表达式
+
+    # 下面为路由分发, 请各个模块按自己的前缀, 在自己的模块内的urls.py编写url路径
+    path("manager/", include("manager.urls",namespace="manager")),
+    path("exam/", include("exam.urls")),
+    path("reg/", include("reg.urls")),
+    path("marking/", include("marking.urls")),
+    path("user/", include("user.urls")),
+]
+>>>>>>> b09cbaec3168500e8d0829a8fb1eac511c7caf0f
