@@ -30,4 +30,5 @@ urlpatterns = [
     path("reg_template_test/", reg_views.template_test),
     path("reg_main/", reg_views.reg_main),
     path('ConfirmRegState/', reg_views.ConfirmRegState, name='ConfirmRegState'),
+    path('SelectSite/', reg_views.SelectSite, name='SelectSite')
 ]

@@ -27,7 +27,7 @@ def ConfirmRegState(request):
         if information['state']==0:
             #todo 从数据库中获取全部信息
             fullinformation={'Name':'testname','school':'testschool','phone':'testphone','email':'testemail'}
-            return render(request, 'checkinformation.html',fullinformation)
+            return render(request, 'checkinformation.html',{'n1':fullinformation})
         #已报名
         else :
             return render(request, 'reg_main.html')
@@ -35,7 +35,7 @@ def ConfirmRegState(request):
         #todo 根据错误状态返回不同的页面码
         if information['flag']==1:
             return HttpResponse("ConfirmRegState错误状态码1")
-    return render(request, 'reg_main.html',information)
+    return render(request, 'reg_main.html',{'n1':information})
 
 def SelectSite(request):
-    return None
+    return HttpResponse("SelectSite")

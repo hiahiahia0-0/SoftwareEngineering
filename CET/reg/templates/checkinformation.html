@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <title>Example</title>
+</head>
+<body>
+<ul>
+    {% for key, value in request.session.info.items %}
+        <li>{{ key }}: {{ value }}</li>
+    {% endfor %}
+</ul>
+<table>
+    {% for key, value in n1.items %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ value }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+
+<form method="post" action="{% url 'SelectSite' %}">
+    {% csrf_token %}
+    <button type="submit">确认信息</button>
+</form>
+
+</body>
+</html>
