@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <title>在线考试系统</title>
+    
+    <style>
+        body {
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+
+        .title {
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #f0f0f0;
+            padding: 10px;
+            z-index: 1;
+
+        }
+
+
+        .title-text {
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding-top: 50px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .question-label {
+            font-weight: bold;
+        }
+
+        .options {
+            margin-top: 10px;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .essay-question {
+            margin-bottom: 20px;
+        }
+
+        .essay-content {
+            margin-bottom: 20px;
+        }
+
+        .essay-label {
+            font-weight: bold;
+        }
+
+        .essay-textarea {
+            width: 100%;
+            height: 100px;
+        }
+
+        .section-title {
+            font-weight: bold;
+        }
+
+        .button-container{
+            text-align: center;
+        }
+
+        #timer {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: red;
+            margin-top: 5px;
+        }
+
+        #submit-button {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #timeout-modal {
+            display: none;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: red;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+{%load static%}
+
+<body>
+    <div class="title">
+        <span class="title-text">在线考试系统</span>
+        <div id="timer">
+            <img src="{% static 'clock_icon.png'%}" alt="timer-clock-icon" style="height: 16px;">
+            <span id="minutes">--</span>:<span id="seconds">--</span>
+        </div>
+    </div>
+    <div class="content">
+
+
+        <h3 class="section-title">一、选择题</h3>
+
+        <div class="question">
+            <label class="question-label">1.选择题 1</label>
+            <div class="options">
+                <label><input type="radio" name="question1" value="option1">选项 1</label>
+                <label><input type="radio" name="question1" value="option2">选项 2</label>
+                <label><input type="radio" name="question1" value="option3">选项 3</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="question-label">2.选择题 2:</label>
+            <div class="options">
+                <label><input type="radio" name="question2" value="option1">选项 1</label>
+                <label><input type="radio" name="question2" value="option2">选项 2</label>
+                <label><input type="radio" name="question2" value="option3">选项 3</label>
+            </div>
+        </div>
+
+
+        <div class="question">
+            <label class="question-label">3.选择题 3:</label>
+            <div class="options">
+                <label><input type="radio" name="question3" value="option2">选项 1</label>
+                <label><input type="radio" name="question3" value="option1">选项 2</label>
+                <label><input type="radio" name="question3" value="option3">选项 3</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="question-label">4.选择题 4:</label>
+            <div class="options">
+                <label><input type="radio" name="question4" value="option1">选项 1</label>
+                <label><input type="radio" name="question4" value="option2">选项 2</label>
+                <label><input type="radio" name="question4" value="option3">选项 3</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="question-label">5.选择题 5:</label>
+            <div class="options">
+                <label><input type="radio" name="question5" value="option1">选项 1</label>
+                <label><input type="radio" name="question5" value="option2">选项 2</label>
+                <label><input type="radio" name="question5" value="option3">选项 3</label>
+            </div>
+        </div>
+        <div class="question">
+            <label class="question-label">6.选择题 6:</label>
+            <div class="options">
+                <label><input type="radio" name="question6" value="option1">选项 1</label>
+                <label><input type="radio" name="question6" value="option2">选项 2</label>
+                <label><input type="radio" name="question6" value="option3">选项 3</label>
+            </div>
+        </div>
+
+        <h3 class="section-title">二、非选择题</h3>
+
+        <div class="essay-question">
+            <div class="essay-content">
+                <label class="essay-label">1.非选择题1</label>
+            </div>
+            <textarea name="essay" rows="6" class="essay-textarea">作答区</textarea>
+        </div>
+
+        <div class="essay-question">
+            <div class="essay-content">
+                <label class="essay-label">2.非选择题2</label>
+            </div>
+            <textarea name="essay" rows="6" class="essay-textarea">作答区</textarea>
+        </div>
+
+        <div id="timeout-modal">超时自动收卷</div>
+        <div class="button-container">
+            <button id="submit-button" type="submit">提交</button>
+        </div>
+
+    </div>
+
+    <script>
+        var minutes = 100;
+        var seconds = 00;
+        var timerInterval;
+        var submitButton= document.getElementById('submit-button');
+
+       submitButton.addEventListener('click',function() {
+            submitButton.disabled = true;
+            submitButton.textContent="已提交";
+            clearInterval(timerInterval);
+        });
+
+        function updateTimer() {
+            seconds--;
+
+            if (seconds < 0) {
+                minutes--;
+                seconds = 59;
+            }
+
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+            if (minutes === 0 && seconds === 0) {
+                clearInterval(timerInterval);
+                submitExam();
+            }
+        }
+
+        function submitExam() {
+            submitButton.disabled = true;
+            submitButton.textContent = '已提交';
+            document.getElementById('timeout-modal').style.display = 'block';
+        }
+
+        timerInterval = setInterval(updateTimer, 1000);
+
+        setTimeout(function () {
+            clearInterval(timerInterval);
+            submitExam();
+        }, (100 * 60 * 1000));
+    </script>
+</body>
+
+</html>
