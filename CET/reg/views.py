@@ -59,10 +59,36 @@ def TakeAnPosition(request):
         selectedData = request.POST.get('selectedData')  # 获取选中行的索引
         if selectedData:
             print(selectedData)
-            #todo 向数据库申请一个考位，并返回申请成功与否
+            #todo 向数据库申请一个考位，并返回申请成功与否，这里不搞这么复杂，直接生成订单
+            #todo,向数据库申请创建一个订单，订单状态为未支付，订单号为随机生成的
             state=True
-            return render(request, 'TakeAnPosition.html', {'n1': selectedData})
+            order={'orderID':450450450,'examID':450450,'stuexamID':450450450,'paid':0,'payment':0}
+            if state==True:
+                return render(request, 'payorder.html', {'n1': order})
+            else:
+                return HttpResponse("申请订单失败！")
         else:
             return HttpResponse("未找到选中的数据或数据已过期！")
     else:
         return HttpResponse("请先选择考点！")
+
+def PayOrder(request):
+    info=request.session.get("info")
+    if not info:
+        return HttpResponse("请先登录!")
+    if request.method == 'POST':
+        order=request.POST.get('order')
+        print(order)
+        if order:
+            print(order)
+            #todo,向数据库申请支付一个订单，订单状态为已支付，订单号为随机生成的
+            state=True
+            if state==True:
+                return HttpResponse("支付成功！")
+            else:
+                return HttpResponse("支付失败！")
+        else:
+            return HttpResponse("未找到订单或订单已过期！")
+    else:
+        return HttpResponse("请先选择考点！")
+    
