@@ -1,4 +1,6 @@
 **/__pycache__/
 **/*.pyc
 ./.idea/
+**/migrations/*
+!**/migrations/__init__.py
 !.gitignore
