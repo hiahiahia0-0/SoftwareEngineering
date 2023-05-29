@@ -17,7 +17,12 @@ from django.contrib import admin
 from django.urls import path , re_path
 from django.conf.urls import include
 from manager import views as mngr_views
-
+from reg import views as reg_views
+# urlpatterns = [
+#     path("admin/", admin.site.urls),
+#     re_path(r"^$", mngr_views.hello),
+#     path('test/', mngr_views.show_items, name='test'),
+# ]
 urlpatterns = [
     path("admin/", admin.site.urls),
     re_path(r"^$", mngr_views.hello), # 支持正则表达式

@@ -92,10 +92,10 @@ DATABASES = {
     { 
         'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
         'NAME': 'cet', # 数据库名称
-        'HOST': '127.0.0.1', # 数据库地址，本机 ip 地址 127.0.0.1 
+        'HOST': '82.156.2.209', # 数据库地址，本机 ip 地址 127.0.0.1 
         'PORT': 3306, # 端口 
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': '123456', # 数据库密码
+        'PASSWORD': 'mysqlpwd1', # 数据库密码
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
             'charset': 'utf8mb4'
@@ -154,7 +154,6 @@ SIMPLEUI_ANALYSIS = False
 # # 设置右上角Home图标跳转链接，会以另外一个窗口打开
 # SIMPLEUI_INDEX = '百度一下，你就知道'
 
-
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
@@ -163,3 +162,4 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+APPEND_SLASH = False
