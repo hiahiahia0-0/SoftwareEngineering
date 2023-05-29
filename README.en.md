@@ -14,6 +14,7 @@ This is software engineering project in NKU.
 ```
 3. execute `make run` to start
 4. execute `make ini` and follow the tips
+5. execute `make test` to add testcases
 
 
 ## dev
