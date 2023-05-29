@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+  <form id="myForm" method="post" action="{% url 'TakeAnPosition' %}">
+    {% csrf_token %}
+    <input type="hidden" name="selectedData" id="selectedDataInput">
+  </form>
+
+  <table id="dataTable">
+    <tr id="headerRow">
+      <th>选择</th>
+    </tr>
+  </table>
+
+  <script>
+    var n1 = {{ n1|safe }}; // 假设 n1 是从 Django 后端传递过来的字典列表
+
+    function generateTable() {
+      var table = document.getElementById("dataTable");
+      var headerRow = document.getElementById("headerRow");
+
+      // 生成表头
+      for (var key in n1[0]) {
+        var th = document.createElement("th");
+        th.innerHTML = key;
+        headerRow.appendChild(th);
+      }
+
+      // 生成数据行
+      for (var i = 0; i < n1.length; i++) {
+        var row = document.createElement("tr");
+        var radioCell = document.createElement("td");
+        var radioButton = document.createElement("input");
+        radioButton.type = "radio";
+        radioButton.name = "rowSelection";
+        radioButton.value = i;
+        radioCell.appendChild(radioButton);
+        row.appendChild(radioCell);
+
+        for (var key in n1[i]) {
+          var cell = document.createElement("td");
+          cell.innerHTML = n1[i][key];
+          row.appendChild(cell);
+        }
+
+        table.appendChild(row);
+      }
+    }
+
+    function submitSelection() {
+      var selectedRow = document.querySelector('input[name="rowSelection"]:checked');
+      if (selectedRow) {
+        var selectedIndex = selectedRow.value;
+        var selectedData = JSON.stringify(n1[selectedIndex]);
+        document.getElementById("selectedDataInput").value = selectedData;
+        document.getElementById("myForm").submit();
+      } else {
+        alert("请先选择一行。");
+      }
+    }
+
+    // 在页面加载完成后生成表格
+    document.addEventListener("DOMContentLoaded", function() {
+      generateTable();
+    });
+  </script>
+  
+  <button onclick="submitSelection()">提交选择</button>
+</body>
+</html>
