@@ -258,7 +258,7 @@ class exam:
                 return None,NOT_EXIST
             sys_log('学生所有考试查询成功', LOG_OK)
             exams = [exam_odr.exam for exam_odr in exam_odrs]
-            if exams != None:
+            if exams != []:
                 return exams, SUCCESS
             else:
                 return None, NOT_EXIST

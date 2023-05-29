@@ -41,6 +41,7 @@ urlpatterns = [
     path('SelectSite/', reg_views.SelectSite, name='SelectSite'),
     path('TakeAnPosition/', reg_views.TakeAnPosition, name='TakeAnPosition'),
     path('PayOrder/', reg_views.PayOrder, name='PayOrder'),
+    path('CheckOrder/', reg_views.CheckOrder, name='CheckOrder'),
     
     
     

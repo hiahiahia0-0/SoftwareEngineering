@@ -5,9 +5,9 @@
     <title>Example</title>
 </head>
 <body>
-{% if request.session.info %}
+{% if request.cookie.user_id %}
     <div style="position:absolute; top:0; right:0;">
-        {{ request.session.info.id }}
+        {{ request.cookie.user_id }}
     </div>
 {% endif %}
 
@@ -15,6 +15,9 @@
     {% csrf_token %}
     <button type="submit">报名六级笔试</button>
 </form>
-
+<form method="post" action="{% url 'CheckOrder' %}">
+    {% csrf_token %}
+    <button type="submit">查看我的订单</button>
+</form>
 </body>
 </html>

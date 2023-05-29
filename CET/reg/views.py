@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from manager import db_operation as db
 # Create your views here.
 def index (request):
     return HttpResponse("<center><h1>reg index </h1></center>")
@@ -8,8 +9,8 @@ def template_test(request):
     return render(request, 'reg_template_test.html')
 
 def reg_main(request):
-    request.session["info"] = {'id':450450,'password':"testpassword"}
-    info=request.session.get("info")
+    request.session["user_stu"] = '450450'
+    info=request.session.get("user_stu")
     if not info:
         return HttpResponse("请先登录!")
     return render(request, 'reg_main.html')
@@ -17,41 +18,37 @@ def reg_main(request):
 def ConfirmRegState(request):
     #todo 需要数据库根据用户名和密码查询是否是已报名，得到一个下面information形式的字典
     #todo 请先登录需要返回到登陆界面
-    info=request.session.get("info")
+    info=request.session.get("user_stu")
     if not info:
         return HttpResponse("请先登录!")
-    information={'flag':0,'state':0,'ID':450450450,'pwd':"testpassword"}
-    #todo根据不同的状态码返回不同的页面
-    if information['flag']==0:
-        #未报名
-        if information['state']==0:
+    
+    information=db.exam.select_all_exam_by_stu(info)
+    print(information)
+    if information[1]==db.NOT_EXIST:
             #todo 从数据库中获取全部信息
-            fullinformation={'Name':'testname','school':'testschool','phone':'testphone','email':'testemail'}
-            return render(request, 'checkinformation.html',{'n1':fullinformation})
+        fullinformation={'Name':'testname','school':'testschool','phone':'testphone','email':'testemail'}
+        return render(request, 'checkinformation.html',{'n1':fullinformation})
         #已报名
-        else :
-            return render(request, 'reg_main.html')
+    elif information[1]==db.LOG_OK:
+        return HttpResponse("已报名")
     else:
-        #todo 根据错误状态返回不同的页面码
-        if information['flag']==1:
-            return HttpResponse("ConfirmRegState错误状态码1")
-    return render(request, 'reg_main.html',{'n1':information})
+        return HttpResponse("考试状态查询错误")
 
 def SelectSite(request):
     #根据session信息获取用户对应的城市，然后查询数据库，返回该城市的考点信息
-    info=request.session.get("info")
+    info=request.session.get("user_stu")
     if not info:
         return HttpResponse("请先登录!")
     #todo 从数据库中获取全部信息
     fullinformationlist=[
-        {'Name':'testname1','school':'testschool1','phone':'testphone1','email':'testemail1'},
-        {'Name':'testname2','school':'testschool2','phone':'testphone2','email':'testemail2'},
+        {'Name':'testname1','school':'testschool1'},
+        {'Name':'testname2','school':'testschool2'},
     ]
     return render(request, 'SelectSite.html',{'n1':fullinformationlist})
 
 def TakeAnPosition(request):
     #print("启动")
-    info = request.session.get("info")
+    info = request.session.get("user_stu")
     if not info:
         return HttpResponse("请先登录!")
 
@@ -73,7 +70,7 @@ def TakeAnPosition(request):
         return HttpResponse("请先选择考点！")
 
 def PayOrder(request):
-    info=request.session.get("info")
+    info=request.session.get("user_stu")
     if not info:
         return HttpResponse("请先登录!")
     if request.method == 'POST':
@@ -92,3 +89,13 @@ def PayOrder(request):
     else:
         return HttpResponse("请先选择考点！")
     
+def CheckOrder(request):
+    info=request.session.get("user_stu")
+    if not info:
+        return HttpResponse("请先登录!")
+    #todo 从数据库中获取对应用户的订单信息
+    order={'orderID':450450450,'examID':450450,'stuexamID':450450450,'paid':0,'payment':0}
+    if order!=None:
+        return render(request, 'checkorder.html', {'n1': order})
+    else:
+        return HttpResponse("未找到订单或订单已过期！")
