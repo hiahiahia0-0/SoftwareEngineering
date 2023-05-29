@@ -14,7 +14,7 @@ class db_test(TestCase):
         db_operation.user.select_stu_by_id(stu.id)
         db_operation.user.select_stu_by_phone(stu.phone)
         db_operation.user.update_stu(
-            stu.id, '李四', 'NKU', '123456', '18888888888', '123@qq.com')
+            stu.self_number, '李四', 'NKU', '123456', '18888888888', '123@qq.com',stu.id)
         db_operation.user.delete_stu(stu.id)
 
     def test_user_tea(self):
@@ -58,9 +58,12 @@ class db_test(TestCase):
         db_operation.exam.update_paper(p.id, '2', 1)
         db_operation.exam.delete_paper(p.id)
 
-    def test_eaxm_eaxm(self):
+    def test_exam_exam(self):
         db_operation.exam.insert_paper('1', 1)  # fk
-        db_operation.exam.insert_exam(datetime.now(), 'nku', 1, 1)
+        date_string = "2022-01-01 12:00:00"
+        date_format = "%Y-%m-%d %H:%M:%S"
+        date_object = datetime.strptime(date_string, date_format)
+        db_operation.exam.insert_exam(date_object, 'nku', 1, 1)
         exam = db_operation.exam_m.Exam.objects.latest('id')
         db_operation.exam.select_exam_by_id(exam.id)
         db_operation.exam.update_exam(exam.id, datetime.now(), 'tju', 1, 1)
@@ -112,6 +115,7 @@ class db_test(TestCase):
         db_operation.user.insert_tea('李四', '123456', '18888888888')
 
         db_operation.marking.insert_ExamScore(1, 1, 1, 99)
+        db_operation.marking.insert_ExamScore(1, 1, 1, 0)
 
         e , ok = db_operation.marking.select_all_EScore()
         if ok and e:

@@ -22,7 +22,9 @@ from typing import List, Optional,Tuple
         * 试卷的增删改查
         * 考试安排的增删改查 (注意外键约束)
         * 订单记录的增删查 (注意外键约束)
-        * 获取所有考试安排
+        * 查询所有题目
+        * 查询所有试卷
+        * 查询所有考试安排
         * 获取某学生的所有考试安排
     * marking
         * 答题情况的增删改查 (注意外键约束)
@@ -246,6 +248,34 @@ class exam:
             return exams, SUCCESS
         except:
             sys_log('所有考试查询失败', LOG_ERR)
+            return None,FAIL
+    
+    @staticmethod
+    def select_all_que() -> Tuple[Optional[models.QuerySet[exam_m.Question]], int]:
+        try:
+            try:
+                que = exam_m.Question.objects.all()
+            except exam_m.Question.DoesNotExist:
+                sys_log('所有题目查询不存在', LOG_ERR)
+                return None,NOT_EXIST
+            sys_log('所有题目查询成功', LOG_OK)
+            return que, SUCCESS
+        except:
+            sys_log('所有题目查询失败', LOG_ERR)
+            return None,FAIL
+
+    @staticmethod
+    def select_all_paper() -> Tuple[Optional[models.QuerySet[exam_m.Paper]], int]:
+        try:
+            try:
+                paper = exam_m.Paper.objects.all()
+            except exam_m.Paper.DoesNotExist:
+                sys_log('所有试卷查询不存在', LOG_ERR)
+                return None,NOT_EXIST
+            sys_log('所有试卷查询成功', LOG_OK)
+            return paper, SUCCESS
+        except:
+            sys_log('所有试卷查询失败', LOG_ERR)
             return None,FAIL
 
     @staticmethod
