@@ -5,8 +5,9 @@ from user import models
 from user.models import Student
 from user.models import Teacher
 import random
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from manager import db_operation as db
 
 '''
@@ -232,7 +233,9 @@ def mod_info_stu(request):
 
 # 进入到考试报名中心，另一个
 
-
+def go_to_exam(request):
+    request.session['stu_id'] = db.user.select_stu_by_phone(request.session.get('user_stu'))[0].id
+    return HttpResponseRedirect(reverse('exam:exam_info'))
 
 # 新的一个界面：教师选择进入哪个子系统
 #教师的子系统分别有：教师个人信息，阅卷系统

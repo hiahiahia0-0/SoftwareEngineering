@@ -20,12 +20,12 @@ from manager import db_operation
 """
 def exam_info(request):
     # 模拟session
-    request.session['stu_id']='123456';
-    stu_id=request.session.get('stu_id');
-    exams,status=db_operation.exam.select_all_exam_by_stu(stu_id);
+    # request.session['stu_id']='123456';
+    stu_id=request.session.get('stu_id')
+    exams,status=db_operation.exam.select_all_exam_by_stu(stu_id)
     print(exams)
     if status==db_operation.SUCCESS:
-        return render(request,'exam/exam_info.html',{'exams':exams});
+        return render(request,'exam/exam_info.html',{'exams':exams})
     else:
         return HttpResponse("您没有报名的考试，请通过报考系统报名后重试！")
     
