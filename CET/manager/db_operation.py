@@ -250,6 +250,21 @@ class exam:
 
     @staticmethod
     def select_all_exam_by_stu(stu_id) -> Tuple[Optional[List[Optional[exam_m.Exam]]], int]:
+        # for debug use
+        try:
+            try:
+                exams = exam_m.Exam.objects.all()
+            except exam_m.Exam.DoesNotExist:
+                sys_log('所有考试查询不存在', LOG_ERR)
+                return None,NOT_EXIST
+            sys_log('所有考试查询成功', LOG_OK)
+            
+            return exams, SUCCESS
+        except:
+            sys_log('所有考试查询失败', LOG_ERR)
+            return None,FAIL
+
+        # true operate
         try:
             try:
                 exam_odrs = exam_m.ExamOrder.objects.filter(student_id=stu_id)
@@ -258,10 +273,7 @@ class exam:
                 return None,NOT_EXIST
             sys_log('学生所有考试查询成功', LOG_OK)
             exams = [exam_odr.exam for exam_odr in exam_odrs]
-            if exams != None and len(exams)>0:
-                return exams, SUCCESS
-            else:
-                return None, NOT_EXIST
+            return exams,SUCCESS if exams != None and len(exams)>0 else NOT_EXIST
         except:
             sys_log('所有考试查询失败', LOG_ERR)
             return None,FAIL

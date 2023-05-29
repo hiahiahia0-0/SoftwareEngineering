@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.http import HttpResponse
 from exam import models as exam_m
 from manager import db_operation
@@ -23,17 +23,49 @@ def exam_info(request):
     request.session['stu_id']='123456';
     stu_id=request.session.get('stu_id');
     exams,status=db_operation.exam.select_all_exam_by_stu(stu_id);
+    print(exams)
     if status==db_operation.SUCCESS:
-        return render(request,'exam/exam_info.html',{'examns':exams});
+        return render(request,'exam/exam_info.html',{'exams':exams});
     else:
-        return get_object_or_404(exam_m.Exam);
+        return HttpResponse("您没有报名的考试，请通过报考系统报名后重试！")
     
 
-def exam_detail(request):
-    return render(request,'exam/exam_detail.html');
-
-def exam_submit(request):
-    return render(request,'exam/exam_submit.html');
+def exam_detail(request,exam_id):
+    exam,status=db_operation.exam.select_exam_by_id(exam_id)
+    if status!=db_operation.SUCCESS:
+        return HttpResponse("在线考试载入错误，请稍后重试！")
+    
+    paper,status=db_operation.exam.select_paper_by_id(exam.paper)
+    if status!=db_operation.SUCCESS:
+        return HttpResponse("在线考试试卷载入错误，请稍后重试！")   
+    
+    questions=paper.question_ids
+    questions=questions[1:-1] # 去除首尾的"["、"]"
+    items=questions.split(',')
+    question_ids=[(int)(item) for item in items]
+    
+    paper_questions=[]
+    for question_id in question_ids:
+        question_info,status=db_operation.exam.select_question_by_id(question_id)
+        if status==db_operation.SUCCESS:
+            paper_questions.append(question_info)
+    
+    if paper_questions==[]:
+        return HttpResponse("在线考试试卷题目载入错误，请稍后重试！")
+    
+    return render(request,'exam/exam_detail.html',{'questions':paper_questions})
+def exam_d(request):
+    return render(request,'exam/exam_detail.html')
+def exam_s(request):
+    if request.method=='POST':
+        return render(request,'exam/exam_submitted.html')
+    return HttpResponse("在线考试提交信息载入错误，请稍后重试！")
+def exam_submit(request,exam_id,use_time):
+    exam,status=db_operation.exam.select_exam_by_id(exam_id)
+    if status!=db_operation.SUCCESS:
+        return HttpResponse("在线考试信息获取错误，请稍后重试！")
+    
+    return render(request,'exam/exam_submitted.html',{'exam':exam},{'use_time':use_time})
 
 
 

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="cn">
+
 <head>
     <title>在线考试系统</title>
-    
+
     <style>
         body {
             margin-left: 5%;
@@ -42,26 +43,11 @@
             font-weight: bold;
         }
 
-        .options {
+        .question-content {
             margin-top: 10px;
+            margin-bottom: 10px;
         }
 
-        .options label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .essay-question {
-            margin-bottom: 20px;
-        }
-
-        .essay-content {
-            margin-bottom: 20px;
-        }
-
-        .essay-label {
-            font-weight: bold;
-        }
 
         .essay-textarea {
             width: 100%;
@@ -72,7 +58,7 @@
             font-weight: bold;
         }
 
-        .button-container{
+        .button-container {
             text-align: center;
         }
 
@@ -107,102 +93,106 @@
     <div class="title">
         <span class="title-text">在线考试系统</span>
         <div id="timer">
-            <img src="{% static 'clock_icon.png'%}" alt="timer-clock-icon" style="height: 16px;">
+            <!-- <img src="{% static 'clock_icon.png'%}" alt="timer-clock-icon" style="height: 16px;"> -->
             <span id="minutes">--</span>:<span id="seconds">--</span>
         </div>
     </div>
     <div class="content">
 
-
         <h3 class="section-title">一、选择题</h3>
-
         <div class="question">
             <label class="question-label">1.选择题 1</label>
+            <div class="question-content">
+                <label>此题选A。 A. A B. A C. A D. A</label>
+            </div>
             <div class="options">
-                <label><input type="radio" name="question1" value="option1">选项 1</label>
-                <label><input type="radio" name="question1" value="option2">选项 2</label>
-                <label><input type="radio" name="question1" value="option3">选项 3</label>
+                <input type="text" name="question1" placeholder="输入选项字母作为答案">
             </div>
         </div>
 
         <div class="question">
-            <label class="question-label">2.选择题 2:</label>
-            <div class="options">
-                <label><input type="radio" name="question2" value="option1">选项 1</label>
-                <label><input type="radio" name="question2" value="option2">选项 2</label>
-                <label><input type="radio" name="question2" value="option3">选项 3</label>
+            <label class="question-label">2.选择题 2</label>
+            <div class="question-content">
+                <label>此题选A。 A. A B. A C. A D. A</label>
             </div>
-        </div>
-
-
-        <div class="question">
-            <label class="question-label">3.选择题 3:</label>
             <div class="options">
-                <label><input type="radio" name="question3" value="option2">选项 1</label>
-                <label><input type="radio" name="question3" value="option1">选项 2</label>
-                <label><input type="radio" name="question3" value="option3">选项 3</label>
+                <input type="text" name="question2" placeholder="输入选项字母作为答案">
             </div>
         </div>
 
         <div class="question">
-            <label class="question-label">4.选择题 4:</label>
+            <label class="question-label">3.选择题 3</label>
+            <div class="question-content">
+                <label>此题选A。 A. A B. A C. A D. A</label>
+            </div>
             <div class="options">
-                <label><input type="radio" name="question4" value="option1">选项 1</label>
-                <label><input type="radio" name="question4" value="option2">选项 2</label>
-                <label><input type="radio" name="question4" value="option3">选项 3</label>
+                <input type="text" name="question3" placeholder="输入选项字母作为答案">
             </div>
         </div>
 
         <div class="question">
-            <label class="question-label">5.选择题 5:</label>
+            <label class="question-label">4.选择题 4</label>
+            <div class="question-content">
+                <label>此题选A。 A. A B. A C. A D. A</label>
+            </div>
             <div class="options">
-                <label><input type="radio" name="question5" value="option1">选项 1</label>
-                <label><input type="radio" name="question5" value="option2">选项 2</label>
-                <label><input type="radio" name="question5" value="option3">选项 3</label>
+                <input type="text" name="question4" placeholder="输入选项字母作为答案">
             </div>
         </div>
+
         <div class="question">
-            <label class="question-label">6.选择题 6:</label>
+            <label class="question-label">5.选择题 5</label>
+            <div class="question-content">
+                <label>此题选A。 A. A B. A C. A D. A</label>
+            </div>
             <div class="options">
-                <label><input type="radio" name="question6" value="option1">选项 1</label>
-                <label><input type="radio" name="question6" value="option2">选项 2</label>
-                <label><input type="radio" name="question6" value="option3">选项 3</label>
+                <input type="text" name="question5" placeholder="输入选项字母作为答案">
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="question-label">6.选择题 6</label>
+            <div class="question-content">
+                <label>此题选A。 A. A B. A C. A D. A</label>
+            </div>
+            <div class="options">
+                <input type="text" name="question6" placeholder="输入选项字母作为答案">
             </div>
         </div>
 
         <h3 class="section-title">二、非选择题</h3>
 
-        <div class="essay-question">
-            <div class="essay-content">
-                <label class="essay-label">1.非选择题1</label>
+        <div class="question">
+            <label class="question-label">1.非选择题1</label>
+            <div class="question-content">
+                <label>此题的答案为123。</label>
             </div>
-            <textarea name="essay" rows="6" class="essay-textarea">作答区</textarea>
+            <textarea name="question7" rows="6" class="essay-textarea" placeholder="作答区域"></textarea>
         </div>
 
-        <div class="essay-question">
-            <div class="essay-content">
-                <label class="essay-label">2.非选择题2</label>
+        <div class="question">
+            <label class="question-label">2.非选择题2</label>
+            <div class="question-content">
+                <label>此题的答案为456。</label>
             </div>
-            <textarea name="essay" rows="6" class="essay-textarea">作答区</textarea>
+            <textarea name="question8" rows="6" class="essay-textarea" placeholder="作答区域"></textarea>
         </div>
 
-        <div id="timeout-modal">超时自动收卷</div>
+        <div id="timeout-modal">已收卷</div>
         <div class="button-container">
-            <button id="submit-button" type="submit">提交</button>
+            <button id="submit-button" type="button">提交</button>
         </div>
-
     </div>
 
     <script>
-        var minutes = 100;
-        var seconds = 00;
+        var minutes = 0;
+        var seconds = 10;
         var timerInterval;
-        var submitButton= document.getElementById('submit-button');
+        var submitButton = document.getElementById('submit-button');
 
-       submitButton.addEventListener('click',function() {
-            submitButton.disabled = true;
-            submitButton.textContent="已提交";
+        submitButton.addEventListener('click', function () {
             clearInterval(timerInterval);
+            submitExam();
         });
 
         function updateTimer() {
@@ -226,6 +216,46 @@
             submitButton.disabled = true;
             submitButton.textContent = '已提交';
             document.getElementById('timeout-modal').style.display = 'block';
+
+            // 收集用户的答案
+            var answers = {};
+
+            // 获取所有输入框元素
+            var inputElements = document.querySelectorAll('input[type="text"]');
+
+            // 遍历输入框元素，将答案存入 answers 对象中
+            inputElements.forEach(function (input) {
+                var questionId = input.getAttribute('name');
+                var answer = input.value;
+                answers[questionId] = answer;
+            });
+
+            // 获取所有 textarea 元素
+            var textareaElements = document.querySelectorAll('textarea');
+
+            // 遍历 textarea 元素，将答案存入 answers 对象中
+            textareaElements.forEach(function (textarea) {
+                var questionId = textarea.getAttribute('name');
+                var answer = textarea.value;
+                answers[questionId] = answer;
+            });
+
+            console.log(answers);
+
+            // 发送答案给后端处理
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'submit', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // 处理服务器响应
+                    var response = JSON.parse(xhr.responseText);
+                    // 处理成功响应的逻辑
+                } else {
+                    // 处理错误响应或其他情况的逻辑
+                }
+            };
+            xhr.send(JSON.stringify(answers));
         }
 
         timerInterval = setInterval(updateTimer, 1000);

@@ -28,33 +28,32 @@
     <table>
         <tr>
             <th>考试名称</th>
-            <th>考试地点</th>
+            <th>考试日期</th>
             <th>考试时间</th>
+            <th>考试地点</th>
+            <th>考试人数</th>
             <th>考试类型</th>
-            <th>状态</th>
+            <th>考试状态</th>
         </tr>
         {% for exam in exams %}
         <tr>
             <td>{{ exam.name }}</td>
-            <td>{{ exam.location }}</td>
-            <td>{{ exam.time }}</td>
-            <td>{{ exam.is_online|yesno:"线下,线上" }}</td>
+            <td>{{ exam.date }}</td>
+            <td>{{ exam.start_time }} — {{ exam.end_time}}</td>
+            <td>{{ exam.place }}</td>
+            <td>{{ exam.max_students }}</td>
+            <td>{{ exam.is_online|yesno:"线上,线下" }}</td>
             <td>
-                {% if exam.is_online %}
-                    <a href="{{ exam.exam_link }}">跳转链接</a>
+                {% if exam.is_online and exam.is_beginning %}
+                    <a href="online/{{ exam.id }}">线上正在考试</a>
+                {% elif exam.is_beginning %}
+                    线下正在考试
+                {% else %}
+                    考试还未开始
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
-        <!-- <tr>
-            <td>1111111111</td>
-            <td>2222222222</td>
-            <td>3333333333</td>
-            <td>44444</td>
-            <td>
-                    <a href="111.html">跳转链接</a>
-            </td>
-        </tr> -->
 
     </table>
 </body>
