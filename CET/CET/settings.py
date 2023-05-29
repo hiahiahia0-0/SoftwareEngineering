@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "simpleui",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -135,10 +136,28 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+SIMPLEUI_LOGO = 'https://gsp0.baidu.com/5aAHeD3nKhI2p27j8IqW0jdnxx1xbK/tb/editor/images/client/image_emoticon1.png'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+SIMPLEUI_HOME_INFO = False 
+SIMPLEUI_ANALYSIS = False 
 
+#  # 隐藏首页的快捷操作和最近动作
+# SIMPLEUI_HOME_QUICK = False 
+# SIMPLEUI_HOME_ACTION = False
+ 
+# # 修改左侧菜单首页设置
+# SIMPLEUI_HOME_PAGE = '百度一下，你就知道'  # 指向页面
+# SIMPLEUI_HOME_TITLE = '百度欢迎你!' # 首页标题
+# SIMPLEUI_HOME_ICON = 'fa fa-code' # 首页图标
+ 
+# # 设置右上角Home图标跳转链接，会以另外一个窗口打开
+# SIMPLEUI_INDEX = '百度一下，你就知道'
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')

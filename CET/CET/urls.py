@@ -33,9 +33,12 @@ urlpatterns = [
     path("reg/", include("reg.urls")),
     path("marking/", include("marking.urls")),
     path("user/", include("user.urls")),
+<<<<<<< HEAD
     #path('test/', mngr_views.show_items, name='test'),
 
     
     
     
+=======
+>>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
 ]

@@ -22,7 +22,13 @@ from typing import List, Optional,Tuple
         * 试卷的增删改查
         * 考试安排的增删改查 (注意外键约束)
         * 订单记录的增删查 (注意外键约束)
+<<<<<<< HEAD
         * 获取所有考试安排
+=======
+        * 查询所有题目
+        * 查询所有试卷
+        * 查询所有考试安排
+>>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
         * 获取某学生的所有考试安排
     * marking
         * 答题情况的增删改查 (注意外键约束)
@@ -247,9 +253,58 @@ class exam:
         except:
             sys_log('所有考试查询失败', LOG_ERR)
             return None,FAIL
+<<<<<<< HEAD
 
     @staticmethod
     def select_all_exam_by_stu(stu_id) -> Tuple[Optional[List[Optional[exam_m.Exam]]], int]:
+=======
+    
+    @staticmethod
+    def select_all_que() -> Tuple[Optional[models.QuerySet[exam_m.Question]], int]:
+        try:
+            try:
+                que = exam_m.Question.objects.all()
+            except exam_m.Question.DoesNotExist:
+                sys_log('所有题目查询不存在', LOG_ERR)
+                return None,NOT_EXIST
+            sys_log('所有题目查询成功', LOG_OK)
+            return que, SUCCESS
+        except:
+            sys_log('所有题目查询失败', LOG_ERR)
+            return None,FAIL
+
+    @staticmethod
+    def select_all_paper() -> Tuple[Optional[models.QuerySet[exam_m.Paper]], int]:
+        try:
+            try:
+                paper = exam_m.Paper.objects.all()
+            except exam_m.Paper.DoesNotExist:
+                sys_log('所有试卷查询不存在', LOG_ERR)
+                return None,NOT_EXIST
+            sys_log('所有试卷查询成功', LOG_OK)
+            return paper, SUCCESS
+        except:
+            sys_log('所有试卷查询失败', LOG_ERR)
+            return None,FAIL
+
+    @staticmethod
+    def select_all_exam_by_stu(stu_id) -> Tuple[Optional[List[Optional[exam_m.Exam]]], int]:
+        # for debug use
+        # try:
+        #     try:
+        #         exams = exam_m.Exam.objects.all()
+        #     except exam_m.Exam.DoesNotExist:
+        #         sys_log('所有考试查询不存在', LOG_ERR)
+        #         return None,NOT_EXIST
+        #     sys_log('所有考试查询成功', LOG_OK)
+            
+        #     return exams, SUCCESS
+        # except:
+        #     sys_log('所有考试查询失败', LOG_ERR)
+        #     return None,FAIL
+
+        # true operate
+>>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
         try:
             try:
                 exam_odrs = exam_m.ExamOrder.objects.filter(student_id=stu_id)
@@ -258,10 +313,14 @@ class exam:
                 return None,NOT_EXIST
             sys_log('学生所有考试查询成功', LOG_OK)
             exams = [exam_odr.exam for exam_odr in exam_odrs]
+<<<<<<< HEAD
             if exams != []:
                 return exams, SUCCESS
             else:
                 return None, NOT_EXIST
+=======
+            return exams,SUCCESS if exams != None and len(exams)>0 else NOT_EXIST
+>>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
         except:
             sys_log('所有考试查询失败', LOG_ERR)
             return None,FAIL
@@ -522,6 +581,10 @@ class exam:
             return FAIL
 
 class marking:
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
     def __init__(self) -> None:
         pass
 
