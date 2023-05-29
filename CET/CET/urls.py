@@ -34,14 +34,7 @@ urlpatterns = [
     path("marking/", include("marking.urls")),
     path("user/", include("user.urls")),
     #path('test/', mngr_views.show_items, name='test'),
-    path("reg_view/", reg_views.index),
-    path("reg_template_test/", reg_views.template_test),
-    path("reg_main/", reg_views.reg_main),
-    path('ConfirmRegState/', reg_views.ConfirmRegState, name='ConfirmRegState'),
-    path('SelectSite/', reg_views.SelectSite, name='SelectSite'),
-    path('TakeAnPosition/', reg_views.TakeAnPosition, name='TakeAnPosition'),
-    path('PayOrder/', reg_views.PayOrder, name='PayOrder'),
-    path('CheckOrder/', reg_views.CheckOrder, name='CheckOrder'),
+
     
     
     
