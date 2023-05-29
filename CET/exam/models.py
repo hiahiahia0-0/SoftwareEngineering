@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from datetime import time
 from user import models as user_models
 
 # 题目
@@ -21,8 +22,8 @@ class Exam(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
     date = models.DateField()
-    start_time = models.TimeField(default='00:00:00')
-    end_time = models.TimeField(default='00:00:00')
+    start_time = models.TimeField(default=time(0, 0, 0))
+    end_time = models.TimeField(default=time(0, 0, 0))
     place = models.CharField(max_length=30)
     is_online=models.BooleanField()
     is_beginning=models.BooleanField()

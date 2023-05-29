@@ -14,6 +14,7 @@
 ```
 3. 执行 `make run` 启动
 4. 执行 `make ini` .根据提示创建root
+5. 执行 `make test` 加入测试用例
 
 ## 开发
 如果使用了新的python库，请在`requirements.txt`中添加此项

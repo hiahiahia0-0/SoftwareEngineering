@@ -1,7 +1,7 @@
 from typing import List
 from django.test import TestCase
 from manager import db_operation
-from datetime import datetime
+from datetime import datetime,time
 
 
 # 为了节省时间，带有外键约束的测试都默认id=1，即单个测试生效，一起测试不行
@@ -27,14 +27,18 @@ class db_test(TestCase):
 
     def test_exam_alle(self):
         db_operation.exam.insert_paper('1', 1)  # fk
-        db_operation.exam.insert_exam(datetime.now(), 'nku', 1, 1)
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         exams, ok = db_operation.exam.select_all_exam()
         if ok and exams:
             print(exams[0].date)
 
     def test_exam_alle_bystu(self):
         db_operation.exam.insert_paper('1', 1)  # fk
-        db_operation.exam.insert_exam(datetime.now(), 'nku', 1, 1)
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
             1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.exam.insert_ExamOder(1, 1, True, 1.0)
@@ -63,15 +67,19 @@ class db_test(TestCase):
         date_string = "2022-01-01 12:00:00"
         date_format = "%Y-%m-%d %H:%M:%S"
         date_object = datetime.strptime(date_string, date_format)
-        db_operation.exam.insert_exam(date_object, 'nku', 1, 1)
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',date_object,start_time,end_time,True,False, 'nku', 1, 1)
         exam = db_operation.exam_m.Exam.objects.latest('id')
         db_operation.exam.select_exam_by_id(exam.id)
-        db_operation.exam.update_exam(exam.id, datetime.now(), 'tju', 1, 1)
+        db_operation.exam.update_exam(exam.id,'e1', datetime.now(), start_time,end_time,True,False,'tju', 1, 1)
         db_operation.exam.delete_exam(exam.id)
 
     def test_exam_order(self):
         db_operation.exam.insert_paper('1', 1)  # fk
-        db_operation.exam.insert_exam(datetime.now(), 'nku', 1, 1)
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
             1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.exam.insert_ExamOder(1, 1, True, 1.0)
@@ -83,7 +91,9 @@ class db_test(TestCase):
     def test_marking_ans_rec(self):
         db_operation.exam.insert_question(1, '题目1', '选项1')
         db_operation.exam.insert_paper('1', 1)  # fk
-        db_operation.exam.insert_exam(datetime.now(), 'nku', 1, 1)
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
             1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
 
@@ -95,7 +105,9 @@ class db_test(TestCase):
     def test_marking_ExamScore(self):
         db_operation.exam.insert_question(1, '题目1', '选项1')
         db_operation.exam.insert_paper('1', 1)  # fk
-        db_operation.exam.insert_exam(datetime.now(), 'nku', 1, 1)
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
             1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.user.insert_tea('李四', '123456', '18888888888')
@@ -109,7 +121,9 @@ class db_test(TestCase):
     def test_marking_allEscore(self):
         db_operation.exam.insert_question(1, '题目1', '选项1')
         db_operation.exam.insert_paper('1', 1)  # fk
-        db_operation.exam.insert_exam(datetime.now(), 'nku', 1, 1)
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
             1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.user.insert_tea('李四', '123456', '18888888888')
@@ -125,7 +139,9 @@ class db_test(TestCase):
     def test_marking_allEscore_bystu(self):
         db_operation.exam.insert_question(1, '题目1', '选项1')
         db_operation.exam.insert_paper('1', 1)  # fk
-        db_operation.exam.insert_exam(datetime.now(), 'nku', 1, 1)
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
             1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.user.insert_tea('李四', '123456', '18888888888')
