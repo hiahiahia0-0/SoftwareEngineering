@@ -15,3 +15,8 @@ admin.site.register(Student)
 admin.site.register(Teacher)
 admin.site.register(AnswerRecord)
 admin.site.register(ExamScore)
+
+admin.site.site_header = 'CET管理后台'  # 设置header
+admin.site.site_title = 'CET管理后台'   # 设置title
+admin.site.index_title = 'CET管理后台'
+
