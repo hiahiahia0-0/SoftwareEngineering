@@ -19,8 +19,13 @@ class Paper(models.Model):
 # 考试安排
 class Exam(models.Model):
     id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=30)
     date = models.DateField()
+    start_time = models.TimeField(default='00:00:00')
+    end_time = models.TimeField(default='00:00:00')
     place = models.CharField(max_length=30)
+    is_online=models.BooleanField()
+    is_beginning=models.BooleanField()
     paper = models.ForeignKey(Paper, on_delete=models.SET_NULL,null=True)
     max_students = models.IntegerField()
 
