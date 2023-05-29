@@ -38,4 +38,31 @@ def ConfirmRegState(request):
     return render(request, 'reg_main.html',{'n1':information})
 
 def SelectSite(request):
-    return HttpResponse("SelectSite")
+    #根据session信息获取用户对应的城市，然后查询数据库，返回该城市的考点信息
+    info=request.session.get("info")
+    if not info:
+        return HttpResponse("请先登录!")
+    #todo 从数据库中获取全部信息
+    fullinformationlist=[
+        {'Name':'testname1','school':'testschool1','phone':'testphone1','email':'testemail1'},
+        {'Name':'testname2','school':'testschool2','phone':'testphone2','email':'testemail2'},
+    ]
+    return render(request, 'SelectSite.html',{'n1':fullinformationlist})
+
+def TakeAnPosition(request):
+    #print("启动")
+    info = request.session.get("info")
+    if not info:
+        return HttpResponse("请先登录!")
+
+    if request.method == 'POST':
+        selectedData = request.POST.get('selectedData')  # 获取选中行的索引
+        if selectedData:
+            print(selectedData)
+            #todo 向数据库申请一个考位，并返回申请成功与否
+            state=True
+            return render(request, 'TakeAnPosition.html', {'n1': selectedData})
+        else:
+            return HttpResponse("未找到选中的数据或数据已过期！")
+    else:
+        return HttpResponse("请先选择考点！")
