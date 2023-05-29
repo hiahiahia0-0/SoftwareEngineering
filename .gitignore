@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-**/_pycache_/
-=======
 **/__pycache__/
->>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
 **/*.pyc
 ./.idea/
 !.gitignore
