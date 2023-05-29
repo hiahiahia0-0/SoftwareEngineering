@@ -24,11 +24,8 @@ class Exam(models.Model):
     start_time = models.TimeField(default='00:00:00')
     end_time = models.TimeField(default='00:00:00')
     place = models.CharField(max_length=30)
-<<<<<<< HEAD
-=======
     is_online=models.BooleanField()
     is_beginning=models.BooleanField()
->>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
     paper = models.ForeignKey(Paper, on_delete=models.SET_NULL,null=True)
     max_students = models.IntegerField()
 

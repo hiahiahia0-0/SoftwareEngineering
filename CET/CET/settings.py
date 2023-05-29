@@ -154,10 +154,6 @@ SIMPLEUI_ANALYSIS = False
 # # 设置右上角Home图标跳转链接，会以另外一个窗口打开
 # SIMPLEUI_INDEX = '百度一下，你就知道'
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')

@@ -253,11 +253,6 @@ class exam:
         except:
             sys_log('所有考试查询失败', LOG_ERR)
             return None,FAIL
-<<<<<<< HEAD
-
-    @staticmethod
-    def select_all_exam_by_stu(stu_id) -> Tuple[Optional[List[Optional[exam_m.Exam]]], int]:
-=======
     
     @staticmethod
     def select_all_que() -> Tuple[Optional[models.QuerySet[exam_m.Question]], int]:
@@ -304,7 +299,6 @@ class exam:
         #     return None,FAIL
 
         # true operate
->>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
         try:
             try:
                 exam_odrs = exam_m.ExamOrder.objects.filter(student_id=stu_id)
@@ -313,14 +307,7 @@ class exam:
                 return None,NOT_EXIST
             sys_log('学生所有考试查询成功', LOG_OK)
             exams = [exam_odr.exam for exam_odr in exam_odrs]
-<<<<<<< HEAD
-            if exams != []:
-                return exams, SUCCESS
-            else:
-                return None, NOT_EXIST
-=======
             return exams,SUCCESS if exams != None and len(exams)>0 else NOT_EXIST
->>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
         except:
             sys_log('所有考试查询失败', LOG_ERR)
             return None,FAIL
@@ -581,10 +568,7 @@ class exam:
             return FAIL
 
 class marking:
-<<<<<<< HEAD
-=======
     
->>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
     def __init__(self) -> None:
         pass
 
