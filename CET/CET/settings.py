@@ -94,7 +94,7 @@ DATABASES = {
         'HOST': '127.0.0.1', # 数据库地址，本机 ip 地址 127.0.0.1 
         'PORT': 3306, # 端口 
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'Dd918273', # 数据库密码
+        'PASSWORD': '123456', # 数据库密码
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
             'charset': 'utf8mb4'
@@ -140,7 +140,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
