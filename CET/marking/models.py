@@ -11,6 +11,14 @@ class AnswerRecord(models.Model):
     question_id = models.ForeignKey(exam_models.Question, on_delete=models.SET_NULL,null=True)
     is_right = models.BooleanField()
 
+    class Meta:
+        verbose_name = '答题情况'
+        verbose_name_plural = '答题情况'
+
+    # cannot return an int
+    # def __str__(self): 
+    #     return self.id
+
 # 考试成绩表
 class ExamScore(models.Model):
     id = models.AutoField(primary_key=True)
@@ -18,3 +26,10 @@ class ExamScore(models.Model):
     student_id = models.ForeignKey(user_models.Student, on_delete=models.SET_NULL,null=True)
     teacher_id = models.ForeignKey(user_models.Teacher, on_delete=models.SET_NULL,null=True)
     score = models.IntegerField()
+
+    class Meta:
+        verbose_name = '考试成绩'
+        verbose_name_plural = '考试成绩'
+    
+    # def __str__(self):
+    #     return self.id

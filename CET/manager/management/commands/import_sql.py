@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import connection
 from manager import db_operation as db
-from datetime import datetime
+from datetime import datetime ,time
 
 
 class Command(BaseCommand):
@@ -45,8 +45,10 @@ class Command(BaseCommand):
         if papers and papers.count()>1 and err:
             pid1 = papers[papers.count()-1].id
             pid2 = papers[papers.count()-2].id
-            db.exam.insert_exam(date_1, 'TJU', pid1, 10)
-            db.exam.insert_exam(datetime.now(), 'NKU', pid2, 10)
+            start_time = time(9, 0, 0)
+            end_time = time(10, 0, 0)
+            db.exam.insert_exam('eTJU',date_1,start_time,end_time,True,False, 'TJU', 1, 10)
+            db.exam.insert_exam('eNKU',datetime.now(),start_time,end_time,True,False, 'NKU', pid2, 10)
         else :
             print("\033[1;32mError Importing Papers and Exam\033[0m")
         

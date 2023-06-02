@@ -2,11 +2,11 @@ from user import models as user_m
 from exam import models as exam_m
 from marking import models as marking_m
 
-import time
-from datetime import datetime
+import time as t
+from datetime import datetime, time
 from django.utils import timezone
-from django.db  import models
-from typing import List, Optional,Tuple
+from django.db import models
+from typing import List, Optional, Tuple
 
 
 '''
@@ -22,13 +22,10 @@ from typing import List, Optional,Tuple
         * 试卷的增删改查
         * 考试安排的增删改查 (注意外键约束)
         * 订单记录的增删查 (注意外键约束)
-<<<<<<< HEAD
         * 获取所有考试安排
-=======
         * 查询所有题目
         * 查询所有试卷
         * 查询所有考试安排
->>>>>>> 48b74f5179aa582ffcf10e77a1531744ad15fcc4
         * 获取某学生的所有考试安排
     * marking
         * 答题情况的增删改查 (注意外键约束)
@@ -56,99 +53,102 @@ SUCCESS = 1
 LOG_ERR = 0
 LOG_OK = 1
 
+
 def sys_log(msg, type):
     # 高亮打印当前时间和信息
-    now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    now = t.strftime("%Y-%m-%d %H:%M:%S", t.localtime())
     if type == LOG_ERR:
         print("\033[1;31m LOG_ERR:" + now + ": " + msg + "\033[0m")
     else:
         print("\033[1;32m LOG:" + now + ": " + msg + "\033[0m")
 
+
 class user:
     def __init__(self):
         pass
-    
+
     @staticmethod
     def select_stu_by_phone(phone) -> Tuple[Optional[user_m.Student], int]:
         try:
             try:
-                stu =  user_m.Student.objects.get(phone=phone)
+                stu = user_m.Student.objects.get(phone=phone)
             except user_m.Student.DoesNotExist:
                 sys_log('学生查询不存在', LOG_ERR)
-                return None ,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('学生查询成功', LOG_OK)
-            return stu , SUCCESS
+            return stu, SUCCESS
         except:
             sys_log('学生查询失败', LOG_ERR)
-            return None,FAIL
-    
+            return None, FAIL
+
     @staticmethod
     def select_tea_by_phone(phone) -> Tuple[Optional[user_m.Teacher], int]:
         try:
             try:
-                tea =  user_m.Teacher.objects.get(phone=phone)
+                tea = user_m.Teacher.objects.get(phone=phone)
             except user_m.Teacher.DoesNotExist:
                 sys_log('教师查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('教师查询成功', LOG_OK)
-            return tea ,SUCCESS
-        except:
-            sys_log('教师查询失败', LOG_ERR)
-            return None,FAIL
-
-    @staticmethod
-    def select_stu_by_id(id) -> tuple[Optional[user_m.Student] , int]:
-        try:
-            try :
-                stu =  user_m.Student.objects.get(id=id)
-            except user_m.Student.DoesNotExist:
-                sys_log('学生查询不存在', LOG_ERR)
-                return None ,NOT_EXIST
-            sys_log('学生查询成功', LOG_OK)
-            return stu , SUCCESS
-        except:
-            sys_log('学生查询失败', LOG_ERR)
-            return None,FAIL
-
-    @staticmethod
-    def select_tea_by_id(id) -> Tuple[Optional[user_m.Teacher], int]:
-        try:
-            try :
-                tea =  user_m.Teacher.objects.get(id=id)
-            except user_m.Teacher.DoesNotExist:
-                sys_log('教师查询不存在', LOG_ERR)
-                return None,NOT_EXIST
-            sys_log('教师查询成功', LOG_OK)
-            return tea ,SUCCESS
+            return tea, SUCCESS
         except:
             sys_log('教师查询失败', LOG_ERR)
             return None, FAIL
 
     @staticmethod
-    def insert_stu(self_num: int, name: str, school: str, password: str, phone: str, email: str) -> tuple[Optional[user_m.Student] , int] : # id是自增的，不用管
+    def select_stu_by_id(id) -> tuple[Optional[user_m.Student], int]:
+        try:
+            try:
+                stu = user_m.Student.objects.get(id=id)
+            except user_m.Student.DoesNotExist:
+                sys_log('学生查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            sys_log('学生查询成功', LOG_OK)
+            return stu, SUCCESS
+        except:
+            sys_log('学生查询失败', LOG_ERR)
+            return None, FAIL
+
+    @staticmethod
+    def select_tea_by_id(id) -> Tuple[Optional[user_m.Teacher], int]:
+        try:
+            try:
+                tea = user_m.Teacher.objects.get(id=id)
+            except user_m.Teacher.DoesNotExist:
+                sys_log('教师查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            sys_log('教师查询成功', LOG_OK)
+            return tea, SUCCESS
+        except:
+            sys_log('教师查询失败', LOG_ERR)
+            return None, FAIL
+
+    @staticmethod
+    # id是自增的，不用管
+    def insert_stu(self_num: int, name: str, school: str, password: str, phone: str, email: str) -> tuple[Optional[user_m.Student], int]:
         try:
             check = user_m.Student.objects.get(phone=phone)
             if check:
                 sys_log('学生已存在', LOG_ERR)
                 return None, DUPLICATE
-        except :
+        except:
             pass
 
         try:
-            stu = user_m.Student(self_number=self_num, name=name, school=school, password=password, phone=phone, email=email)
+            stu = user_m.Student(self_number=self_num, name=name,
+                                 school=school, password=password, phone=phone, email=email)
             stu.save()
             sys_log('学生添加成功', LOG_OK)
             return stu, SUCCESS
         except Exception as e:
             # 显示错误
             # print(e)
-            sys_log('学生添加失败',LOG_ERR)
+            sys_log('学生添加失败', LOG_ERR)
             return None, FAIL
 
-
-
     @staticmethod
-    def insert_tea(name: str, phone: str, password: str) -> tuple[Optional[user_m.Teacher] , int]: # id自增
+    # id自增
+    def insert_tea(name: str, phone: str, password: str) -> tuple[Optional[user_m.Teacher], int]:
         try:
             check = user_m.Teacher.objects.get(phone=phone)
             if check:
@@ -156,7 +156,7 @@ class user:
                 return None, DUPLICATE
         except:
             pass
-        
+
         try:
             tea = user_m.Teacher(name=name, phone=phone, password=password)
             tea.save()
@@ -167,7 +167,7 @@ class user:
             return None, FAIL
 
     @staticmethod
-    def update_stu(self_number:int,name: str, school: str, password: str, phone: str, email: str,id: int) -> int:
+    def update_stu(self_number: int, name: str, school: str, password: str, phone: str, email: str, id: int) -> int:
         try:
             try:
                 stu = user_m.Student.objects.get(id=id)
@@ -235,10 +235,11 @@ class user:
             sys_log('教师删除失败', LOG_ERR)
             return FAIL
 
+
 class exam:
     def __init__(self):
         pass
-    
+
     @staticmethod
     def select_all_exam() -> Tuple[Optional[models.QuerySet[exam_m.Exam]], int]:
         try:
@@ -246,14 +247,14 @@ class exam:
                 exams = exam_m.Exam.objects.all()
             except exam_m.Exam.DoesNotExist:
                 sys_log('所有考试查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('所有考试查询成功', LOG_OK)
-            
+
             return exams, SUCCESS
         except:
             sys_log('所有考试查询失败', LOG_ERR)
-            return None,FAIL
-    
+            return None, FAIL
+
     @staticmethod
     def select_all_que() -> Tuple[Optional[models.QuerySet[exam_m.Question]], int]:
         try:
@@ -261,12 +262,12 @@ class exam:
                 que = exam_m.Question.objects.all()
             except exam_m.Question.DoesNotExist:
                 sys_log('所有题目查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('所有题目查询成功', LOG_OK)
             return que, SUCCESS
         except:
             sys_log('所有题目查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
     def select_all_paper() -> Tuple[Optional[models.QuerySet[exam_m.Paper]], int]:
@@ -275,12 +276,12 @@ class exam:
                 paper = exam_m.Paper.objects.all()
             except exam_m.Paper.DoesNotExist:
                 sys_log('所有试卷查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('所有试卷查询成功', LOG_OK)
             return paper, SUCCESS
         except:
             sys_log('所有试卷查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
     def select_all_exam_by_stu(stu_id) -> Tuple[Optional[List[Optional[exam_m.Exam]]], int]:
@@ -292,7 +293,7 @@ class exam:
         #         sys_log('所有考试查询不存在', LOG_ERR)
         #         return None,NOT_EXIST
         #     sys_log('所有考试查询成功', LOG_OK)
-            
+
         #     return exams, SUCCESS
         # except:
         #     sys_log('所有考试查询失败', LOG_ERR)
@@ -304,31 +305,41 @@ class exam:
                 exam_odrs = exam_m.ExamOrder.objects.filter(student_id=stu_id)
             except exam_m.Exam.DoesNotExist:
                 sys_log('学生考试查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('学生所有考试查询成功', LOG_OK)
             exams = [exam_odr.exam for exam_odr in exam_odrs]
-            return exams,SUCCESS if exams != None and len(exams)>0 else NOT_EXIST
+            return exams, SUCCESS if exams != None and len(exams) > 0 else NOT_EXIST
         except:
             sys_log('所有考试查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
     def select_exam_by_id(id) -> Tuple[Optional[exam_m.Exam], int]:
         try:
-            try :
-                exam =  exam_m.Exam.objects.get(id=id)
+            try:
+                exam = exam_m.Exam.objects.get(id=id)
             except exam_m.Exam.DoesNotExist:
                 sys_log('考试查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             else:
                 sys_log('考试查询成功', LOG_OK)
-                return exam ,SUCCESS
+                return exam, SUCCESS
         except:
             sys_log('考试查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
-    def insert_exam(date:datetime, place:str, paper:int, max_students:int) -> int:
+    def insert_exam(name: str, date: datetime, start_time: time, end_time: time, is_online: bool, is_beginning: bool, place: str, paper: int, max_students: int) -> int:
+        # id = models.AutoField(primary_key=True)
+        # name = models.CharField(max_length=30)
+        # date = models.DateField()
+        # start_time = models.TimeField(default='00:00:00')
+        # end_time = models.TimeField(default='00:00:00')
+        # place = models.CharField(max_length=30)
+        # is_online=models.BooleanField()
+        # is_beginning=models.BooleanField()
+        # paper = models.ForeignKey(Paper, on_delete=models.SET_NULL,null=True)
+        # max_students = models.IntegerField()
         try:
             try:
                 p = exam_m.Paper.objects.get(id=paper)
@@ -338,7 +349,9 @@ class exam:
             except:
                 sys_log('未知错误：试卷', LOG_ERR)
                 return FAIL
-            exam = exam_m.Exam(date=date, place=place, paper=p, max_students=max_students)
+            # exam = exam_m.Exam(date=date, place=place, paper=p, max_students=max_students)
+            exam = exam_m.Exam(name=name, date=date, start_time=start_time, end_time=end_time, is_online=is_online,
+                               is_beginning=is_beginning, place=place, paper=p, max_students=max_students)
             exam.save()
             sys_log('考试添加成功', LOG_OK)
             return SUCCESS
@@ -347,7 +360,7 @@ class exam:
             return FAIL
 
     @staticmethod
-    def update_exam(id: int, date: datetime, place: str, paper_id: int, max_students: int) -> int:
+    def update_exam(id: int, name: str, date: datetime, start_time: time, end_time: time, is_online: bool, is_beginning: bool, place: str, paper_id: int, max_students: int) -> int:
         try:
             try:
                 exam = exam_m.Exam.objects.get(id=id)
@@ -358,7 +371,12 @@ class exam:
                 sys_log('未知错误：考试', LOG_ERR)
                 return FAIL
 
+            exam.name = name
             exam.date = date
+            exam.start_time = start_time
+            exam.end_time = end_time
+            exam.is_online = is_online
+            exam.is_beginning = is_beginning
             exam.place = place
 
             try:
@@ -396,31 +414,31 @@ class exam:
     @staticmethod
     def select_question_by_id(id) -> Tuple[Optional[exam_m.Question], int]:
         try:
-            try :
-                question =  exam_m.Question.objects.get(id=id)
+            try:
+                question = exam_m.Question.objects.get(id=id)
             except exam_m.Question.DoesNotExist:
                 sys_log('题目查询不存在', LOG_ERR)
-                return None,NOT_EXIST
-            
+                return None, NOT_EXIST
+
             sys_log('题目查询成功', LOG_OK)
-            return question ,SUCCESS
+            return question, SUCCESS
         except:
             sys_log('题目查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
-    def insert_question(type:int, question:str, answer:str) -> int:
+    def insert_question(type: int, question: str, answer: str) -> int:
         try:
-            q =  exam_m.Question(type=type, question=question, answer=answer)
+            q = exam_m.Question(type=type, question=question, answer=answer)
             q.save()
             sys_log('题目添加成功', LOG_OK)
-            return  SUCCESS
+            return SUCCESS
         except:
             sys_log('题目添加失败', LOG_ERR)
             return FAIL
 
     @staticmethod
-    def update_question(id:int, type:int, question:str, answer:str) -> int:
+    def update_question(id: int, type: int, question: str, answer: str) -> int:
         try:
             try:
                 q = exam_m.Question.objects.get(id=id)
@@ -455,19 +473,19 @@ class exam:
     @staticmethod
     def select_paper_by_id(id) -> Tuple[Optional[exam_m.Paper], int]:
         try:
-            try :
-                paper =  exam_m.Paper.objects.get(id=id)
+            try:
+                paper = exam_m.Paper.objects.get(id=id)
             except exam_m.Paper.DoesNotExist:
                 sys_log('试卷查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('试卷查询成功', LOG_OK)
-            return paper ,SUCCESS
+            return paper, SUCCESS
         except:
             sys_log('试卷查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
-    def insert_paper(question_ids:str, type:int) -> int:
+    def insert_paper(question_ids: str, type: int) -> int:
         try:
             paper = exam_m.Paper(question_ids=question_ids, type=type)
             paper.save()
@@ -478,7 +496,7 @@ class exam:
             return FAIL
 
     @staticmethod
-    def update_paper(id:int, question_ids:str, type:int) -> int:
+    def update_paper(id: int, question_ids: str, type: int) -> int:
         try:
             try:
                 p = exam_m.Paper.objects.get(id=id)
@@ -512,20 +530,20 @@ class exam:
     @staticmethod
     def select_ExamOder_by_id(id) -> Tuple[Optional[exam_m.ExamOrder], int]:
         try:
-            try :
-                exam_order =  exam_m.ExamOrder.objects.get(id=id)
+            try:
+                exam_order = exam_m.ExamOrder.objects.get(id=id)
             except exam_m.ExamOrder.DoesNotExist:
                 sys_log('考试订单查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             else:
                 sys_log('考试订单查询成功', LOG_OK)
-                return exam_order ,SUCCESS
+                return exam_order, SUCCESS
         except:
             sys_log('考试订单查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
-    def insert_ExamOder(exam_id:int, student_id:int, paid:bool, payment:float) -> int:
+    def insert_ExamOder(exam_id: int, student_id: int, paid: bool, payment: float) -> int:
         try:
             try:
                 e = exam_m.Exam.objects.get(id=exam_id)
@@ -535,7 +553,7 @@ class exam:
             except:
                 sys_log('未知错误：考试', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 s = user_m.Student.objects.get(id=student_id)
             except user_m.Student.DoesNotExist:
                 sys_log('外键约束：学生不存在', LOG_ERR)
@@ -544,7 +562,8 @@ class exam:
                 sys_log('未知错误：学生', LOG_ERR)
                 return FAIL
 
-            exam_order = exam_m.ExamOrder(exam=e, student=s, paid=paid, payment=payment ,pay_time=timezone.now())
+            exam_order = exam_m.ExamOrder(
+                exam=e, student=s, paid=paid, payment=payment, pay_time=timezone.now())
             exam_order.save()
             sys_log('考试订单添加成功', LOG_OK)
             return SUCCESS
@@ -567,8 +586,9 @@ class exam:
             sys_log('考试订单删除失败', LOG_ERR)
             return FAIL
 
+
 class marking:
-    
+
     def __init__(self) -> None:
         pass
 
@@ -579,44 +599,45 @@ class marking:
                 exam_scores = marking_m.ExamScore.objects.all()
             except marking_m.ExamScore.DoesNotExist:
                 sys_log('所有考试成绩查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('所有考试成绩查询成功', LOG_OK)
             return exam_scores, SUCCESS
         except:
             sys_log('所有考试成绩查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
     def select_all_EScore_by_stu(stu_id) -> Tuple[Optional[models.QuerySet[marking_m.ExamScore]], int]:
         try:
             try:
-                exam_scores = marking_m.ExamScore.objects.filter(student_id=stu_id)
+                exam_scores = marking_m.ExamScore.objects.filter(
+                    student_id=stu_id)
             except marking_m.ExamScore.DoesNotExist:
                 sys_log('学生考试成绩查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             sys_log('学生考试成绩查询成功', LOG_OK)
             return exam_scores, SUCCESS
         except:
             sys_log('学生考试成绩查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
     def select_AnswerRecord_by_id(id) -> Tuple[Optional[marking_m.AnswerRecord], int]:
         try:
-            try :
-                answer_record =  marking_m.AnswerRecord.objects.get(id=id)
+            try:
+                answer_record = marking_m.AnswerRecord.objects.get(id=id)
             except marking_m.AnswerRecord.DoesNotExist:
                 sys_log('答题记录查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             else:
                 sys_log('答题记录查询成功', LOG_OK)
-                return answer_record ,SUCCESS
+                return answer_record, SUCCESS
         except:
             sys_log('答题记录查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
-    def insert_AnswerRecord(exam_id:int, student_id:int , question_id:int, is_right:bool) -> int:
+    def insert_AnswerRecord(exam_id: int, student_id: int, question_id: int, is_right: bool) -> int:
         try:
             try:
                 e = exam_m.Exam.objects.get(id=exam_id)
@@ -626,7 +647,7 @@ class marking:
             except:
                 sys_log('未知错误：考试', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 s = user_m.Student.objects.get(id=student_id)
             except user_m.Student.DoesNotExist:
                 sys_log('外键约束：学生不存在', LOG_ERR)
@@ -634,7 +655,7 @@ class marking:
             except:
                 sys_log('未知错误：学生', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 q = exam_m.Question.objects.get(id=question_id)
             except exam_m.Question.DoesNotExist:
                 sys_log('外键约束：题目不存在', LOG_ERR)
@@ -643,7 +664,8 @@ class marking:
                 sys_log('未知错误：题目', LOG_ERR)
                 return FAIL
 
-            answer_record = marking_m.AnswerRecord(exam=e, student_id=s, question_id=q, is_right=is_right)
+            answer_record = marking_m.AnswerRecord(
+                exam=e, student_id=s, question_id=q, is_right=is_right)
             answer_record.save()
             sys_log('答题记录添加成功', LOG_OK)
             return SUCCESS
@@ -667,7 +689,7 @@ class marking:
             return FAIL
 
     @staticmethod
-    def update_AnswerRecord(id:int, eaxm_id:int , student_id:int, question_id:int, is_right:bool) -> int:
+    def update_AnswerRecord(id: int, eaxm_id: int, student_id: int, question_id: int, is_right: bool) -> int:
         try:
             try:
                 answer_record = marking_m.AnswerRecord.objects.get(id=id)
@@ -683,7 +705,7 @@ class marking:
             except:
                 sys_log('未知错误：考试', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 s = user_m.Student.objects.get(id=student_id)
             except user_m.Student.DoesNotExist:
                 sys_log('外键约束：学生不存在', LOG_ERR)
@@ -691,7 +713,7 @@ class marking:
             except:
                 sys_log('未知错误：学生', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 q = exam_m.Question.objects.get(id=question_id)
             except exam_m.Question.DoesNotExist:
                 sys_log('外键约束：题目不存在', LOG_ERR)
@@ -714,20 +736,20 @@ class marking:
     @staticmethod
     def select_ExamScore_by_id(id) -> Tuple[Optional[marking_m.ExamScore], int]:
         try:
-            try :
-                exam_score =  marking_m.ExamScore.objects.get(id=id)
+            try:
+                exam_score = marking_m.ExamScore.objects.get(id=id)
             except marking_m.ExamScore.DoesNotExist:
                 sys_log('考试成绩查询不存在', LOG_ERR)
-                return None,NOT_EXIST
+                return None, NOT_EXIST
             else:
                 sys_log('考试成绩查询成功', LOG_OK)
-                return exam_score ,SUCCESS
+                return exam_score, SUCCESS
         except:
             sys_log('考试成绩查询失败', LOG_ERR)
-            return None,FAIL
+            return None, FAIL
 
     @staticmethod
-    def insert_ExamScore(exam_id:int, student_id:int, teacher_id:int, score:int) -> int:
+    def insert_ExamScore(exam_id: int, student_id: int, teacher_id: int, score: int) -> int:
         try:
             try:
                 e = exam_m.Exam.objects.get(id=exam_id)
@@ -737,7 +759,7 @@ class marking:
             except:
                 sys_log('未知错误：考试', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 s = user_m.Student.objects.get(id=student_id)
             except user_m.Student.DoesNotExist:
                 sys_log('外键约束：学生不存在', LOG_ERR)
@@ -745,7 +767,7 @@ class marking:
             except:
                 sys_log('未知错误：学生', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 t = user_m.Teacher.objects.get(id=teacher_id)
             except user_m.Teacher.DoesNotExist:
                 sys_log('外键约束：老师不存在', LOG_ERR)
@@ -754,7 +776,8 @@ class marking:
                 sys_log('未知错误：老师', LOG_ERR)
                 return FAIL
 
-            exam_score = marking_m.ExamScore(exam_id=e, student_id=s, teacher_id=t, score=score)
+            exam_score = marking_m.ExamScore(
+                exam_id=e, student_id=s, teacher_id=t, score=score)
             exam_score.save()
             sys_log('考试成绩添加成功', LOG_OK)
             return SUCCESS
@@ -778,7 +801,7 @@ class marking:
             return FAIL
 
     @staticmethod
-    def update_ExamScore(id:int, exam_id:int, student_id:int, teacher_id:int, score:int) -> int:
+    def update_ExamScore(id: int, exam_id: int, student_id: int, teacher_id: int, score: int) -> int:
         try:
             try:
                 exam_score = marking_m.ExamScore.objects.get(id=id)
@@ -794,7 +817,7 @@ class marking:
             except:
                 sys_log('未知错误：考试', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 s = user_m.Student.objects.get(id=student_id)
             except user_m.Student.DoesNotExist:
                 sys_log('外键约束：学生不存在', LOG_ERR)
@@ -802,7 +825,7 @@ class marking:
             except:
                 sys_log('未知错误：学生', LOG_ERR)
                 return FAIL
-            try :
+            try:
                 t = user_m.Teacher.objects.get(id=teacher_id)
             except user_m.Teacher.DoesNotExist:
                 sys_log('外键约束：老师不存在', LOG_ERR)
