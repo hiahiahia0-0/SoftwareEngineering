@@ -16,6 +16,7 @@ urlpatterns = [
     path('stu_all', views.stu_all, name='stu_all'),
     path('stu_info', views.stu_info, name='stu_info'),
     path('mod_info_stu', views.mod_info_stu, name='mod_info_stu'),
+    path('go_to_exam', views.go_to_exam, name='go_to_exam'),
 
 ]
 
