@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>CET考试系统学生界面</title>
+    <title>CET考试系统教师界面</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
@@ -138,29 +138,24 @@
 
 <body>
     <div class="topbar">
-         <h1 class="topbar-title">CET考试系统学生界面</h1>
+         <h1 class="topbar-title">CET考试系统教师界面</h1>
     </div>
     <div class="sidebar">
         <div class="sidebar-title">CET6考试</div>
-        <div class="sidebar-username">欢迎 {{ request.session.user_stu }} 访问</div>
+        <div class="sidebar-username">欢迎 {{ request.session.user_tea }} 访问</div>
         <div class="sidebar-options">
             <div class="sidebar-option" onclick="toggleSubMenu('userCenterSubMenu')">
                 <i class="fas fa-user-circle"></i>用户中心
                 <i class="fas fa-chevron-down"></i>
             </div>
             <div id="userCenterSubMenu" class="sidebar-suboptions">
-                <div class="sidebar-suboption" onclick="location.href='/user/mod_info_stu'">修改个人信息</div>
-                <div class="sidebar-suboption" onclick="location.href='/user/mod_password_stu'">修改密码</div>
-                <div class="sidebar-suboption" onclick="location.href='/user/go_to_exam'">已报考的考试信息查询</div>
-                <div class="sidebar-suboption" onclick="location.href='/user/exam_history'">历史考试</div>
+                <div class="sidebar-suboption" onclick="location.href='/user/mod_info_tea'">修改个人信息</div>
+                <div class="sidebar-suboption" onclick="location.href='/user/mod_password_tea'">修改密码</div>
             </div>
             <div class="sidebar-option" onclick="location.href='/user/exam_registration'">
-                <i class="fas fa-edit"></i>考试报名中心
+                <i class="fas fa-edit"></i>教师阅卷中心
             </div>
-            <div class="sidebar-option" onclick="location.href='/user/online_exam'">
-                <i class="fas fa-laptop"></i>线上考试平台
-            </div>
-            <div class="sidebar-option" onclick="location.href='/user/logout'">
+            <div class="sidebar-option" onclick="location.href='/user/logout_tea'">
                 <i class="fas fa-sign-out-alt"></i>退出登录
             </div>
         </div>
@@ -172,28 +167,16 @@
         <div class="info-container">
             <div class="info-items-container">
                 <div class="info-item">
-                    <span class="info-label">准考证号：</span>
+                    <span class="info-label">教师号：</span>
                     <span class="info-value" style="font-size: 26px;">{{ info.id }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">身份证号：</span>
-                    <span class="info-value" style="font-size: 26px;">{{ info.self_number }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">名字：</span>
-                    <span class="info-value" style="font-size: 26px;">{{ info.name }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">学校：</span>
-                    <span class="info-value" style="font-size: 26px;">{{ info.school }}</span>
+                    <span class="info-label">姓名：</span>
+                    <span class="info-value" style="font-size: 26px;">{{ info.name}}</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">电话：</span>
                     <span class="info-value" style="font-size: 26px;">{{ info.phone }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">电子邮箱：</span>
-                    <span class="info-value" style="font-size: 26px;">{{ info.email }}</span>
                 </div>
             </div>
         </div>
