@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponse,HttpResponseRedirect
 from manager import db_operation as db
+from .forms import ModifyInfoForm
 
 '''
 初始页面 表单 http://127.0.0.1:8000/user/index 选择登陆谁
@@ -227,8 +228,41 @@ def stu_info(request):
 
 # 修改个人信息
 def mod_info_stu(request):
-    return render(request, 'users/mod_info_stu.html')
+    # 获取当前用户的学生信息
+    student = stu_active(request)
 
+    if request.method == 'POST':
+        form = ModifyInfoForm(request.POST)
+
+        if form.is_valid():
+            # 更新学生信息，仅更新非空白字段
+            if form.cleaned_data['name']:
+                student.name = form.cleaned_data['name']
+            if form.cleaned_data['school']:
+                student.school = form.cleaned_data['school']
+            if form.cleaned_data['phone']:
+                student.phone = form.cleaned_data['phone']
+            if form.cleaned_data['email']:
+                student.email = form.cleaned_data['email']
+
+            student.save()
+
+            return redirect('stu_all')  # 重定向到个人信息页面或其他适当的页面
+
+    else:
+        form = ModifyInfoForm(initial={
+            'name': student.name,
+            'school': student.school,
+            'phone': student.phone,
+            'email': student.email,
+        })
+        # 移除字段的required属性
+        form.fields['name'].required = False
+        form.fields['school'].required = False
+        form.fields['phone'].required = False
+        form.fields['email'].required = False
+
+    return render(request, 'users/mod_info_stu.html', {'form': form, 'student': student})
 
 
 # 进入到考试报名中心，另一个
