@@ -67,13 +67,10 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="id_number">准考证号:</label>
-                <input type="text" id="id_number" class="readonly-field" value="{{ student.id }}" readonly>
+                <label for="id_number">教师号:</label>
+                <input type="text" id="id_number" class="readonly-field" value="{{ teacher.id }}" readonly>
             </div>
-            <div class="form-group">
-                <label for="self_number">身份证号:</label>
-                <input type="text" id="self_number" class="readonly-field" value="{{ student.self_number }}" readonly>
-            </div>
+
             <div class="form-group">
                 <label for="name">姓名:</label>
                 <input type="text" id="name" name="name" value="{{ form.name.value }}">
@@ -81,13 +78,7 @@
                 <p class="error">{{ form.name.errors }}</p>
                 {% endif %}
             </div>
-            <div class="form-group">
-                <label for="school">学校:</label>
-                <input type="text" id="school" name="school" value="{{ form.school.value }}">
-                {% if form.school.errors %}
-                <p class="error">{{ form.school.errors }}</p>
-                {% endif %}
-            </div>
+
             <div class="form-group">
                 <label for="phone">电话:</label>
                 <input type="text" id="phone" name="phone" value="{{ form.phone.value }}">
@@ -95,13 +86,7 @@
                 <p class="error">{{ form.phone.errors }}</p>
                 {% endif %}
             </div>
-            <div class="form-group">
-                <label for="email">邮箱:</label>
-                <input type="email" id="email" name="email" value="{{ form.email.value }}">
-                {% if form.email.errors %}
-                <p class="error">{{ form.email.errors }}</p>
-                {% endif %}
-            </div>
+
             <div class="form-group">
                 <input type="submit" value="保存" class="submit-button">
             </div>
