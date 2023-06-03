@@ -17,6 +17,11 @@ urlpatterns = [
     path('stu_info', views.stu_info, name='stu_info'),
     path('mod_info_stu', views.mod_info_stu, name='mod_info_stu'),
     path('go_to_exam', views.go_to_exam, name='go_to_exam'),
+    path('tea_info', views.tea_info, name='tea_info'),
+    path('logout_tea', views.logout, name='logout_tea'),
+    path('mod_info_tea', views.mod_info_tea, name='mod_info_tea'),
+    path('mod_password_stu', views.mod_password_stu, name='mod_password_stu'),
+    path('mod_password_tea', views.mod_password_stu, name='mod_password_tea'),
 
 ]
 
