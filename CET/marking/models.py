@@ -10,6 +10,7 @@ class AnswerRecord(models.Model):
     student_id = models.ForeignKey(user_models.Student, on_delete=models.SET_NULL,null=True)
     question_id = models.ForeignKey(exam_models.Question, on_delete=models.SET_NULL,null=True)
     is_right = models.BooleanField()
+    stu_answer = models.TextField()
 
     class Meta:
         verbose_name = '答题情况'
