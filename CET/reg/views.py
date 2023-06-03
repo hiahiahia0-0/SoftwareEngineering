@@ -111,20 +111,25 @@ def PayOrder(request):
     if not info:
         return HttpResponse("请先登录!")
     if request.method == 'POST':
-        order=request.POST.get('order')
-        print(order)
+        order=request.POST.get('selectedData')
+        print("支付的订单是",order)
         if order:
-            print(order)
+            order=json.loads(order)
             #todo,向数据库申请支付一个订单，订单状态为已支付，订单号为随机生成的
-            state=True
-            if state==True:
-                return HttpResponse("支付成功！")
+            if(order["是否已付款"]=="True"):
+                return HttpResponse("订单已支付！无需再支付")
             else:
-                return HttpResponse("支付失败！")
+                print(order["订单id"])
+                state=db.exam.pay_ExamOrder(order["订单id"])
+                if state==db.SUCCESS:
+                    return HttpResponse("支付成功！")
+                else:
+                    return HttpResponse("支付失败！")
+
         else:
             return HttpResponse("未找到订单或订单已过期！")
     else:
-        return HttpResponse("请先选择考点！")
+        return HttpResponse("没有找到对应的考点数据！")
     
 def CheckOrder(request):
     info=request.session.get("user_stu")
@@ -136,12 +141,14 @@ def CheckOrder(request):
     orders=[]
     for i in orderinfo:
         temp={}
-        temp["id"]=i.id
-        temp["exam"]=i.exam
-        temp["student"]=i.student
-        temp["payment"]=i.payment
-        temp["pay_time"]=i.pay_time
+        temp["订单id"]=i.id
+        temp["考试名称"]=i.exam.name
+        temp["考生名称"]=i.student.name
+        temp["订单价格"]=i.payment
+        temp["支付日期"]=i.pay_time.strftime("%Y-%m-%d")
+        temp["是否已付款"]=str(i.paid)
         orders.append(temp)
+    print("全部订单",orders)
     if orders!=[]:
         return render(request, 'checkorder.html', {'n1': orders})
     else:

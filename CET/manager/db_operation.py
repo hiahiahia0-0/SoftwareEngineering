@@ -604,6 +604,22 @@ class exam:
             sys_log('考试订单查询失败', LOG_ERR)
             return None, FAIL
 
+    def pay_ExamOrder(id) -> int:
+        try:
+            try:
+                exam_order = exam_m.ExamOrder.objects.get(id=id)
+            except exam_m.ExamOrder.DoesNotExist:
+                sys_log('考试订单查询不存在', LOG_ERR)
+                return NOT_EXIST
+            print(exam_order)
+            exam_order.paid = True
+            exam_order.save()
+            sys_log('考试订单支付成功', LOG_OK)
+            return SUCCESS
+        except:
+            sys_log('考试订单支付失败', LOG_ERR)
+            return FAIL
+
 class marking:
 
     def __init__(self) -> None:

@@ -1,62 +1,109 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Example</title>
-    <style>
-        ul {
-            list-style-type: none;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+    }
 
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
 
-        form {
-            margin-top: 20px;
-        }
+    th {
+      background-color: #f2f2f2;
+    }
 
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-        }
+    form {
+      margin-bottom: 20px;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <ul>
-        {% for key, value in request.session.info.items %}
-            <li>{{ key }}: {{ value }}</li>
-        {% endfor %}
-    </ul>
+  <form id="myForm" method="post" action="{% url 'PayOrder' %}">
+    {% csrf_token %}
+    <input type="hidden" name="selectedData" id="selectedDataInput">
+  </form>
 
-    <table>
-        {% for key, value in n1.items %}
-            <tr>
-                <td>{{ key }}</td>
-                <td>{{ value }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+  <table id="dataTable">
+    <tr id="headerRow">
+      <th>选择</th>
+    </tr>
+  </table>
 
-    <form method="post" action="{% url 'PayOrder' %}">
-        {% csrf_token %}
-        <input type="hidden" name="order" value="{{ n1 }}">
-        <button type="submit">支付订单</button>
-    </form>
+  <script>
+    var n1 = {{ n1|safe }}; // 假设 n1 是从 Django 后端传递过来的字典列表
+
+    function generateTable() {
+      var table = document.getElementById("dataTable");
+      var headerRow = document.getElementById("headerRow");
+
+      // 生成表头
+      for (var key in n1[0]) {
+        var th = document.createElement("th");
+        th.innerHTML = key;
+        headerRow.appendChild(th);
+      }
+
+      // 生成数据行
+      for (var i = 0; i < n1.length; i++) {
+        var row = document.createElement("tr");
+        var radioCell = document.createElement("td");
+        var radioButton = document.createElement("input");
+        radioButton.type = "radio";
+        radioButton.name = "rowSelection";
+        radioButton.value = i;
+        radioCell.appendChild(radioButton);
+        row.appendChild(radioCell);
+
+        for (var key in n1[i]) {
+          var cell = document.createElement("td");
+          cell.innerHTML = n1[i][key];
+          row.appendChild(cell);
+        }
+
+        table.appendChild(row);
+      }
+    }
+
+    function submitSelection() {
+      var selectedRow = document.querySelector('input[name="rowSelection"]:checked');
+      if (selectedRow) {
+        var selectedIndex = selectedRow.value;
+        var selectedData = JSON.stringify(n1[selectedIndex]);
+        document.getElementById("selectedDataInput").value = selectedData;
+        document.getElementById("myForm").submit();
+      } else {
+        alert("请先选择一行。");
+      }
+    }
+
+    // 在页面加载完成后生成表格
+    document.addEventListener("DOMContentLoaded", function() {
+      generateTable();
+    });
+  </script>
+  
+  <button onclick="submitSelection()">支付此订单</button>
 </body>
 </html>
