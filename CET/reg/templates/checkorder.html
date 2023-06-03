@@ -3,28 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Example</title>
+    <style>
+        ul {
+            list-style-type: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<ul>
-    {% for key, value in request.session.info.items %}
-        <li>{{ key }}: {{ value }}</li>
-    {% endfor %}
-</ul>
-<table>
-    {% for key, value in n1.items %}
-        <tr>
-            <td>{{ key }}</td>
-            <td>{{ value }}</td>
-        </tr>
-    {% endfor %}
+    <ul>
+        {% for key, value in request.session.info.items %}
+            <li>{{ key }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+
+    <table>
+        {% for key, value in n1.items %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+        {% endfor %}
     </table>
 
-
-<form method="post" action="{% url 'PayOrder' %}">
-    {% csrf_token %}
-    <input type="hidden" name="order" value="{{ n1 }}">
-    <button type="submit">支付订单</button>
-</form>
-
+    <form method="post" action="{% url 'PayOrder' %}">
+        {% csrf_token %}
+        <input type="hidden" name="order" value="{{ n1 }}">
+        <button type="submit">支付订单</button>
+    </form>
 </body>
 </html>
