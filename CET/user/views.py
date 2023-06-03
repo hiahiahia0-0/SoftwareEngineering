@@ -9,7 +9,10 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponse,HttpResponseRedirect
 from manager import db_operation as db
-
+from .forms import ModifyInfoForm
+from .forms import ModifyInfoForm_tea
+from .forms import ChangePasswordForm
+from django.contrib.auth.decorators import login_required
 '''
 初始页面 表单 http://127.0.0.1:8000/user/index 选择登陆谁
 学生登陆界面：http://127.0.0.1:8000/user/stu_signin ，输入用户名和密码，正确的话跳转到下一个用户信息页面，不正确的话保持在该页面，但是不知道为啥错误提示不显示
@@ -55,9 +58,7 @@ def tea_signin(request):
             # 登录成功，跳转到下一个用户信息页面
             db.sys_log("教师登录成功",db.LOG_OK)
             # 会话：记录登陆人
-
-            request.session['user_stu'] = id  # 记录当前用户的身份id
-
+            request.session['user_tea'] = id  # 记录当前用户的身份id
             return redirect('tea_info')  # 跳转到用户信息页面的URL名称
         else:
             # 密码错误
@@ -152,8 +153,9 @@ def stu_active(request):
 
 # 找到当前活跃的老师
 def tea_active(request):
-    # return  student instance
+    # return  tea instance
     uid = request.session.get('user_tea')
+    print(uid)
     teacher_Set = Teacher.objects.filter(phone=uid)
     if teacher_Set.count()==0:
         return None
@@ -161,8 +163,6 @@ def tea_active(request):
 
 
 # 新的一个界面：学生选择进入哪个子系统
-# 不管点哪个都退出登陆了？？？？
-
 def stu_all(request):
 
     if request.method == 'POST':
@@ -193,6 +193,21 @@ def stu_all(request):
     context = {"info": info}
     return render(request, 'users/stu_all.html', context)
 
+# 新的一个界面：老师选择进入哪个子系统
+def tea_info(request):
+    # 在当前页面显示学生信息
+    user = tea_active(request)
+    if not user:
+        return redirect('tea_signin')
+    info = {
+        "id": user.id,
+        "name": user.name,
+        "phone": user.phone,
+    }
+    context = {"info": info}
+    return render(request, 'users/tea_info.html', context)
+
+
 # def logout(request):
 #     return render(request, 'users/logout.html')
 # 退出登录
@@ -201,7 +216,13 @@ def logout(request):
     if request.session.get("user_stu"):
         del request.session["user_stu"]
     return render(request, 'users/logout.html')
+# 教师退出登录
 
+def logout_tea(request):
+    # 删除当前cookie
+    if request.session.get("user_tea"):
+        del request.session["user_tea"]
+    return render(request, 'users/logout_tea.html')
 # 用户中心：进去之后是个人信息界面，左侧有几个选项：一个选项为修改个人信息，可以点击，点击后可以修改除身份证和名字以外的信息，
 # 一个选项为修改密码，点击后跳转到修改密码界面
 # 一个选项为已报考的考试信息查询（显示一下学生报考的考试名字时间啥的）
@@ -227,7 +248,145 @@ def stu_info(request):
 
 # 修改个人信息
 def mod_info_stu(request):
-    return render(request, 'users/mod_info_stu.html')
+    # 获取当前用户的学生信息
+    student = stu_active(request)
+
+    if request.method == 'POST':
+        form = ModifyInfoForm(request.POST)
+
+        if form.is_valid():
+            # 更新学生信息，仅更新非空白字段
+            if form.cleaned_data['name']:
+                student.name = form.cleaned_data['name']
+            if form.cleaned_data['school']:
+                student.school = form.cleaned_data['school']
+            if form.cleaned_data['phone']:
+                student.phone = form.cleaned_data['phone']
+            if form.cleaned_data['email']:
+                student.email = form.cleaned_data['email']
+
+            student.save()
+
+            return redirect('stu_all')  # 重定向到个人信息页面或其他适当的页面
+
+    else:
+        form = ModifyInfoForm(initial={
+            'name': student.name,
+            'school': student.school,
+            'phone': student.phone,
+            'email': student.email,
+        })
+        # 移除字段的required属性
+        form.fields['name'].required = False
+        form.fields['school'].required = False
+        form.fields['phone'].required = False
+        form.fields['email'].required = False
+
+    return render(request, 'users/mod_info_stu.html', {'form': form, 'student': student})
+
+# 修改个人信息
+def mod_info_tea(request):
+    # 获取当前用户的学生信息
+    teacher = tea_active(request)
+
+    if request.method == 'POST':
+        form = ModifyInfoForm_tea(request.POST)
+
+        if form.is_valid():
+            # 更新学生信息，仅更新非空白字段
+            if form.cleaned_data['name']:
+                teacher.name = form.cleaned_data['name']
+            if form.cleaned_data['phone']:
+                teacher.phone = form.cleaned_data['phone']
+
+            teacher.save()
+
+            return redirect('tea_info')  # 重定向到个人信息页面或其他适当的页面
+
+    else:
+        form = ModifyInfoForm(initial={
+            'name': teacher.name,
+
+            'phone': teacher.phone,
+
+        })
+        # 移除字段的required属性
+        form.fields['name'].required = False
+
+        form.fields['phone'].required = False
+
+
+    return render(request, 'users/mod_info_tea.html', {'form': form, 'teacher': teacher})
+
+#修改学生密码
+
+def mod_password_stu(request):
+    student = stu_active(request)
+
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST)
+
+        if form.is_valid():
+            old_password = form.cleaned_data['old_password']
+            new_password1 = form.cleaned_data['new_password1']
+            new_password2 = form.cleaned_data['new_password2']
+            # 验证旧密码是否匹配
+            if not student.password == old_password:
+                messages.error(request, '旧密码不正确')
+                return render(request,'users/mod_password_stu.html', {'error_message':'旧密码不正确'})
+                # 验证新密码是否一致
+            if new_password1 != new_password2:
+                    messages.error(request, '新密码输入不一致')
+                    return render(request, 'users/mod_password_stu.html', {'error_message': '新密码输入不一致'})
+
+            # 更新密码
+            student.password = form.cleaned_data['new_password1']
+            print(student.password)
+            student.save()
+            messages.success(request, '密码修改成功')
+            return render(request, 'users/stu_signin.html', {'success_message': '密码修改成功'})
+    else:
+        form = ChangePasswordForm(initial={
+                'password':student.password
+        })
+
+    return render(request, 'users/mod_password_stu.html',{'form': form})
+
+# 修改老师密码
+
+
+def mod_password_tea(request):
+    teacher = tea_active(request)
+
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            old_password = form.cleaned_data['old_password']
+            new_password1 = form.cleaned_data['new_password1']
+            new_password2 = form.cleaned_data['new_password2']
+            # 验证旧密码是否匹配
+            if not teacher.password == old_password:
+
+                messages.error(request, '旧密码不正确')
+                return render(request,'users/mod_password_tea.html', {'error_message':'旧密码不正确'})
+            # 验证新密码是否一致
+            if new_password1 != new_password2:
+                    messages.error(request, '新密码输入不一致')
+                    return render(request, 'users/mod_password_tea.html', {'error_message': '新密码输入不一致'})
+
+            # 更新密码
+            teacher.password = form.cleaned_data['new_password1']
+            teacher.save()
+            messages.success(request, '密码修改成功')
+            return render(request, 'users/tea_signin.html', {'success_message': '密码修改成功'})
+    else:
+        form = ChangePasswordForm(initial={
+                'password':teacher.password
+        })
+
+    return render(request, 'users/mod_password_tea.html',{'form': form})
+
+
 
 
 
