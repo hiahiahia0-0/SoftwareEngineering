@@ -21,7 +21,7 @@ urlpatterns = [
     path('logout_tea', views.logout, name='logout_tea'),
     path('mod_info_tea', views.mod_info_tea, name='mod_info_tea'),
     path('mod_password_stu', views.mod_password_stu, name='mod_password_stu'),
-    path('mod_password_tea', views.mod_password_stu, name='mod_password_tea'),
+    path('mod_password_tea', views.mod_password_tea, name='mod_password_tea'),
 
 ]
 
