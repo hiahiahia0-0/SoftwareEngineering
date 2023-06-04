@@ -33,8 +33,12 @@ class Command(BaseCommand):
         db.exam.insert_question(1, '填空题:请输入2', '2')
         db.exam.insert_question(1, '填空题:请输入3', '3')
         db.exam.insert_question(1, '填空题:请输入4', '4')
-        db.exam.insert_paper('1,2,3,4', 0)
-        db.exam.insert_paper('5,6,7,8', 1)
+        que_id = db.exam_m.Question.objects.latest('id').id
+        if que_id:
+            db.exam.insert_paper(','.join([str(que_id-7), str(que_id-6), str(que_id-5), str(que_id-4)]), 0)
+            db.exam.insert_paper(','.join([str(que_id-3), str(que_id-2), str(que_id-1), str(que_id)]), 1)
+        else:
+            print("\033[1;31mError Importing Papers\033[0m")
 
         date_string = "2077-01-01 12:00:00"
         date_format = "%Y-%m-%d %H:%M:%S"
@@ -47,10 +51,10 @@ class Command(BaseCommand):
             pid2 = papers[papers.count()-2].id
             start_time = time(9, 0, 0)
             end_time = time(10, 0, 0)
-            db.exam.insert_exam('eTJU',date_1,start_time,end_time,True,False, 'TJU', 1, 10)
+            db.exam.insert_exam('eTJU',date_1,start_time,end_time,True,False, 'TJU', pid1, 10)
             db.exam.insert_exam('eNKU',datetime.now(),start_time,end_time,True,False, 'NKU', pid2, 10)
         else :
-            print("\033[1;32mError Importing Papers and Exam\033[0m")
+            print("\033[1;31mError Importing Exam\033[0m")
         
         exams, err = db.exam.select_all_exam()
         eid1 = 0
