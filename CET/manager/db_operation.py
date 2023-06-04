@@ -585,7 +585,40 @@ class exam:
         except:
             sys_log('考试订单删除失败', LOG_ERR)
             return FAIL
+    
+    @staticmethod
+    def select_ExamOrder_by_stu(stu_id) -> Tuple[Optional[models.QuerySet[exam_m.ExamOrder]], int]:
+        try:
+            try:
+                exam_orders = exam_m.ExamOrder.objects.filter(student_id=stu_id)
+            except exam_m.ExamOrder.DoesNotExist:
+                sys_log('考试订单查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            if len(exam_orders) == 0:
+                sys_log('考试订单查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            else:
+                sys_log('考试订单查询成功', LOG_OK)
+                return exam_orders, SUCCESS
+        except:
+            sys_log('考试订单查询失败', LOG_ERR)
+            return None, FAIL
 
+    def pay_ExamOrder(id) -> int:
+        try:
+            try:
+                exam_order = exam_m.ExamOrder.objects.get(id=id)
+            except exam_m.ExamOrder.DoesNotExist:
+                sys_log('考试订单查询不存在', LOG_ERR)
+                return NOT_EXIST
+            print(exam_order)
+            exam_order.paid = True
+            exam_order.save()
+            sys_log('考试订单支付成功', LOG_OK)
+            return SUCCESS
+        except:
+            sys_log('考试订单支付失败', LOG_ERR)
+            return FAIL
 
 class marking:
 

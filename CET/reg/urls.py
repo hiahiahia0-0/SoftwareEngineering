@@ -5,10 +5,11 @@ from reg import views
 urlpatterns = [
         path("reg_view/", views.index),
     path("reg_template_test/", views.template_test),
-    path("reg_main/", views.reg_main),
+    path("reg_main/", views.reg_main,name='reg_main'),
     path('ConfirmRegState/', views.ConfirmRegState, name='ConfirmRegState'),
     path('SelectSite/', views.SelectSite, name='SelectSite'),
     path('TakeAnPosition/', views.TakeAnPosition, name='TakeAnPosition'),
     path('PayOrder/', views.PayOrder, name='PayOrder'),
     path('CheckOrder/', views.CheckOrder, name='CheckOrder'),
+    path('regalerts/', views.regalerts, name='regalerts'),
 ]
