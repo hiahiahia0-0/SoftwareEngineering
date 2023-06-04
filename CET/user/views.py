@@ -387,15 +387,25 @@ def mod_password_tea(request):
 
     return render(request, 'users/mod_password_tea.html',{'form': form})
 
-
-
-
-
 # 进入到考试报名中心，另一个
 
 def go_to_exam(request):
     request.session['stu_id'] = db.user.select_stu_by_phone(request.session.get('user_stu'))[0].id
     return HttpResponseRedirect(reverse('exam:exam_info'))
+
+# go to marking for teacher
+def go_to_mark(request):
+    return HttpResponseRedirect(reverse('marking:mark'))
+
+def get_stu_exam_grade(request):
+    stu = stu_active(request)
+    if stu:
+        print(stu.id)
+        scores ,err = db.marking.select_all_EScore_by_stu(stu.id)
+        if err == db.SUCCESS and scores:
+            return render(request, 'users/stu_exam_grade.html', {'scores': scores})
+    
+    return HttpResponse("You have no exam")
 
 # 新的一个界面：教师选择进入哪个子系统
 #教师的子系统分别有：教师个人信息，阅卷系统

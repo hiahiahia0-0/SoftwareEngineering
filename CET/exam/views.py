@@ -28,7 +28,7 @@ def exam_info(request):
     if state!=db_operation.SUCCESS:
         return HttpResponse("用户不存在")
     exams,status=db_operation.exam.select_all_exam_by_stu(stu_info.id)
-    print(exams)
+    # print(exams)
     if status==db_operation.SUCCESS:
         return render(request,'exam/exam_info.html',{'exams':exams})
     else:
