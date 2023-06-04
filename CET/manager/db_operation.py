@@ -473,6 +473,7 @@ class exam:
     @staticmethod
     def select_paper_by_id(id) -> Tuple[Optional[exam_m.Paper], int]:
         try:
+            print(id)
             try:
                 paper = exam_m.Paper.objects.get(id=id)
             except exam_m.Paper.DoesNotExist:
