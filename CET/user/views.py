@@ -156,10 +156,11 @@ def tea_active(request):
     # return  tea instance
     uid = request.session.get('user_tea')
     print(uid)
-    teacher_Set = Teacher.objects.filter(phone=uid)
-    if teacher_Set.count()==0:
+    teacher_Set,status = db.user.select_tea_by_phone(uid)
+    if teacher_Set and status == db.SUCCESS:
+        return teacher_Set
+    else:
         return None
-    return teacher_Set[0]
 
 
 # 新的一个界面：学生选择进入哪个子系统
@@ -292,14 +293,14 @@ def mod_info_tea(request):
     if request.method == 'POST':
         form = ModifyInfoForm_tea(request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and teacher:
             # 更新学生信息，仅更新非空白字段
             if form.cleaned_data['name']:
-                teacher.name = form.cleaned_data['name']
+                teacher_name = form.cleaned_data['name']
             if form.cleaned_data['phone']:
-                teacher.phone = form.cleaned_data['phone']
+                teacher_phone = form.cleaned_data['phone']
 
-            teacher.save()
+            db.user.update_tea(teacher.id, teacher_name, teacher_phone,teacher.password)
 
             return redirect('tea_info')  # 重定向到个人信息页面或其他适当的页面
 
@@ -358,7 +359,7 @@ def mod_password_stu(request):
 def mod_password_tea(request):
     teacher = tea_active(request)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and teacher:
         form = ChangePasswordForm(request.POST)
         if form.is_valid():
             old_password = form.cleaned_data['old_password']
@@ -375,9 +376,9 @@ def mod_password_tea(request):
                     return render(request, 'users/mod_password_tea.html', {'error_message': '新密码输入不一致'})
 
             # 更新密码
-            teacher.password = form.cleaned_data['new_password1']
-            teacher.save()
-            messages.success(request, '密码修改成功')
+            teacher_password = form.cleaned_data['new_password1']
+            if db.user.update_tea(teacher.id, teacher.name, teacher.phone,teacher_password) == db.SUCCESS:
+                messages.success(request, '密码修改成功')
             return render(request, 'users/tea_signin.html', {'success_message': '密码修改成功'})
     else:
         form = ChangePasswordForm(initial={
@@ -386,15 +387,25 @@ def mod_password_tea(request):
 
     return render(request, 'users/mod_password_tea.html',{'form': form})
 
-
-
-
-
 # 进入到考试报名中心，另一个
 
 def go_to_exam(request):
     request.session['stu_id'] = db.user.select_stu_by_phone(request.session.get('user_stu'))[0].id
     return HttpResponseRedirect(reverse('exam:exam_info'))
+
+# go to marking for teacher
+def go_to_mark(request):
+    return HttpResponseRedirect(reverse('marking:mark'))
+
+def get_stu_exam_grade(request):
+    stu = stu_active(request)
+    if stu:
+        print(stu.id)
+        scores ,err = db.marking.select_all_EScore_by_stu(stu.id)
+        if err == db.SUCCESS and scores:
+            return render(request, 'users/stu_exam_grade.html', {'scores': scores})
+    
+    return HttpResponse("You have no exam")
 
 # 新的一个界面：教师选择进入哪个子系统
 #教师的子系统分别有：教师个人信息，阅卷系统

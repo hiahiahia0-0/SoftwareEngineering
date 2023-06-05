@@ -60,22 +60,22 @@
     {% endfor %}
 </ul>
 <table>
+
     {% for key, value in n1.items %}
         <tr>
-            <td>{{ key }}</td>
             <td>{{ value }}</td>
         </tr>
     {% endfor %}
-    </table>
+</table>
 
-
-<form method="post" action="{% url 'SelectSite' %}">
+<form method="post" action="{% url 'reg_main' %}">
     {% csrf_token %}
-    <button type="submit">确认信息</button>
+    <button type="submit">返回主界面</button>
 </form>
 <form method="post" action="{% url 'logout' %}">
     {% csrf_token %}
     <button type="submit">登出</button>
 </form>
+
 </body>
 </html>

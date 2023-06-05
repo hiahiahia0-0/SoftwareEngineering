@@ -93,100 +93,60 @@
     <div class="title">
         <span class="title-text">在线考试系统</span>
         <div id="timer">
-            <!-- <img src="{% static 'clock_icon.png'%}" alt="timer-clock-icon" style="height: 16px;"> -->
+            <img src="{% static 'clock_icon.png'%}" alt="timer-clock-icon" style="height: 16px;">
             <span id="minutes">--</span>:<span id="seconds">--</span>
         </div>
     </div>
     <div class="content">
 
         <h3 class="section-title">一、选择题</h3>
+        {% if question0s %}
+            {% for question0 in question0s %}
+            <div class="question">
+                <label class="question-label">{{ forloop.counter }}.选择题 {{ forloop.counter }}</label>
+                <div class="question-content">
+                    <label>{{ question0.1 }}.</label>
+                </div>
+                <div class="options">
+                    <input type="text" name="question{{ forloop.counter }},{{question0.0}}" placeholder="输入选项字母作为答案">
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
         <div class="question">
-            <label class="question-label">1.选择题 1</label>
-            <div class="question-content">
-                <label>此题选A。 A. A B. A C. A D. A</label>
-            </div>
-            <div class="options">
-                <input type="text" name="question1" placeholder="输入选项字母作为答案">
-            </div>
+            <label class="question-label">没有选择题!</label>
         </div>
+        {% endif %}
 
-        <div class="question">
-            <label class="question-label">2.选择题 2</label>
-            <div class="question-content">
-                <label>此题选A。 A. A B. A C. A D. A</label>
-            </div>
-            <div class="options">
-                <input type="text" name="question2" placeholder="输入选项字母作为答案">
-            </div>
-        </div>
 
-        <div class="question">
-            <label class="question-label">3.选择题 3</label>
-            <div class="question-content">
-                <label>此题选A。 A. A B. A C. A D. A</label>
-            </div>
-            <div class="options">
-                <input type="text" name="question3" placeholder="输入选项字母作为答案">
-            </div>
-        </div>
-
-        <div class="question">
-            <label class="question-label">4.选择题 4</label>
-            <div class="question-content">
-                <label>此题选A。 A. A B. A C. A D. A</label>
-            </div>
-            <div class="options">
-                <input type="text" name="question4" placeholder="输入选项字母作为答案">
-            </div>
-        </div>
-
-        <div class="question">
-            <label class="question-label">5.选择题 5</label>
-            <div class="question-content">
-                <label>此题选A。 A. A B. A C. A D. A</label>
-            </div>
-            <div class="options">
-                <input type="text" name="question5" placeholder="输入选项字母作为答案">
-            </div>
-        </div>
-
-        <div class="question">
-            <label class="question-label">6.选择题 6</label>
-            <div class="question-content">
-                <label>此题选A。 A. A B. A C. A D. A</label>
-            </div>
-            <div class="options">
-                <input type="text" name="question6" placeholder="输入选项字母作为答案">
-            </div>
-        </div>
 
         <h3 class="section-title">二、非选择题</h3>
-
-        <div class="question">
-            <label class="question-label">1.非选择题1</label>
-            <div class="question-content">
-                <label>此题的答案为123。</label>
+        {% if question1s %}
+            {% for question1 in question1s %}
+            <div class="question">
+                <label class="question-label">{{ forloop.counter }}.非选择题 {{ forloop.counter }}</label>
+                <div class="question-content">
+                    <label>{{ question1.1 }}</label>
+                </div>
+                <textarea name="question{{ forloop.counter }},{{question1.0}}" rows="6" class="essay-textarea" placeholder="作答区域"></textarea>
             </div>
-            <textarea name="question7" rows="6" class="essay-textarea" placeholder="作答区域"></textarea>
-        </div>
-
+            {% endfor %}
+        {% else %}
         <div class="question">
-            <label class="question-label">2.非选择题2</label>
-            <div class="question-content">
-                <label>此题的答案为456。</label>
-            </div>
-            <textarea name="question8" rows="6" class="essay-textarea" placeholder="作答区域"></textarea>
+            <label class="question-label">没有非选择题!</label>
         </div>
+        {% endif %}
 
         <div id="timeout-modal">已收卷</div>
         <div class="button-container">
             <button id="submit-button" type="button">提交</button>
         </div>
+
     </div>
 
     <script>
-        var minutes = 0;
-        var seconds = 10;
+        var minutes = 100;
+        var seconds = 0;
         var timerInterval;
         var submitButton = document.getElementById('submit-button');
 
@@ -211,55 +171,82 @@
                 submitExam();
             }
         }
+        timerInterval = setInterval(updateTimer, 1000);
 
         function submitExam() {
             submitButton.disabled = true;
             submitButton.textContent = '已提交';
             document.getElementById('timeout-modal').style.display = 'block';
 
-            // 收集用户的答案
-            var answers = {};
+            // 获取答题结果数据
+            var formData = new FormData();
+            var time=100*60-minutes*60-seconds;
+            var time_use='用时:'+(Math.floor(time/60)).toString()+'分'+(time%60).toString()+'秒';
+            
+            var questionInputs = document.querySelectorAll('input[name^="question"]');
+            for (var i = 0; i < questionInputs.length; i++) {
+                console.log(questionInputs[i].name);
+                console.log(questionInputs[i].value);
+                formData.append(questionInputs[i].name, questionInputs[i].value);
+            }
+            var essayInputs = document.querySelectorAll('textarea[name^="question"]');
+            for (var j = 0; j < essayInputs.length; j++) {
+                console.log(essayInputs[i].name);
+                console.log(essayInputs[i].value);
+                formData.append(essayInputs[j].name, essayInputs[j].value);
+            }
+            for (var entry of formData.entries()) {
+                console.log(entry[0] + ': ' + entry[1]);
+            }
+              // 获取CSRF令牌的值
+            var csrfToken = getCookie('csrftoken');
 
-            // 获取所有输入框元素
-            var inputElements = document.querySelectorAll('input[type="text"]');
+            // 构建请求头
+            var headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+            headers.append('X-CSRFToken', csrfToken);
 
-            // 遍历输入框元素，将答案存入 answers 对象中
-            inputElements.forEach(function (input) {
-                var questionId = input.getAttribute('name');
-                var answer = input.value;
-                answers[questionId] = answer;
-            });
-
-            // 获取所有 textarea 元素
-            var textareaElements = document.querySelectorAll('textarea');
-
-            // 遍历 textarea 元素，将答案存入 answers 对象中
-            textareaElements.forEach(function (textarea) {
-                var questionId = textarea.getAttribute('name');
-                var answer = textarea.value;
-                answers[questionId] = answer;
-            });
-
-            console.log(answers);
-
-            // 发送答案给后端处理
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'submit', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // 处理服务器响应
-                    var response = JSON.parse(xhr.responseText);
-                    // 处理成功响应的逻辑
+            // 发送POST请求
+            fetch('/exam/online/submitted', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(formData),
+            })
+            .then(response => {
+                // 处理响应
+                if (response.ok) {
+                    // 提交成功
+                    console.log('提交成功！'+time_use);
+                    alert('提交成功\n'+time_use)
                 } else {
-                    // 处理错误响应或其他情况的逻辑
+                    // 提交失败
+                    console.log('提交失败！');
+                    alert('提交失败\n')
                 }
-            };
-            xhr.send(JSON.stringify(answers));
+                window.location.href='/user/stu_all';
+            })
+            .catch(error => {
+                console.error('发生错误:', error);
+            });
+
         }
 
-        timerInterval = setInterval(updateTimer, 1000);
 
+        // 获取指定名称的cookie的值
+        function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+            }
+        }
+        return cookieValue;
+        }
         setTimeout(function () {
             clearInterval(timerInterval);
             submitExam();

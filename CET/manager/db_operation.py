@@ -285,21 +285,6 @@ class exam:
 
     @staticmethod
     def select_all_exam_by_stu(stu_id) -> Tuple[Optional[List[Optional[exam_m.Exam]]], int]:
-        # for debug use
-        # try:
-        #     try:
-        #         exams = exam_m.Exam.objects.all()
-        #     except exam_m.Exam.DoesNotExist:
-        #         sys_log('所有考试查询不存在', LOG_ERR)
-        #         return None,NOT_EXIST
-        #     sys_log('所有考试查询成功', LOG_OK)
-
-        #     return exams, SUCCESS
-        # except:
-        #     sys_log('所有考试查询失败', LOG_ERR)
-        #     return None,FAIL
-
-        # true operate
         try:
             try:
                 exam_odrs = exam_m.ExamOrder.objects.filter(student_id=stu_id)
@@ -330,16 +315,6 @@ class exam:
 
     @staticmethod
     def insert_exam(name: str, date: datetime, start_time: time, end_time: time, is_online: bool, is_beginning: bool, place: str, paper: int, max_students: int) -> int:
-        # id = models.AutoField(primary_key=True)
-        # name = models.CharField(max_length=30)
-        # date = models.DateField()
-        # start_time = models.TimeField(default='00:00:00')
-        # end_time = models.TimeField(default='00:00:00')
-        # place = models.CharField(max_length=30)
-        # is_online=models.BooleanField()
-        # is_beginning=models.BooleanField()
-        # paper = models.ForeignKey(Paper, on_delete=models.SET_NULL,null=True)
-        # max_students = models.IntegerField()
         try:
             try:
                 p = exam_m.Paper.objects.get(id=paper)
@@ -473,6 +448,7 @@ class exam:
     @staticmethod
     def select_paper_by_id(id) -> Tuple[Optional[exam_m.Paper], int]:
         try:
+            print(id)
             try:
                 paper = exam_m.Paper.objects.get(id=id)
             except exam_m.Paper.DoesNotExist:
@@ -585,7 +561,41 @@ class exam:
         except:
             sys_log('考试订单删除失败', LOG_ERR)
             return FAIL
+    
+    @staticmethod
+    def select_ExamOrder_by_stu(stu_id) -> Tuple[Optional[models.QuerySet[exam_m.ExamOrder]], int]:
+        try:
+            try:
+                exam_orders = exam_m.ExamOrder.objects.filter(student_id=stu_id)
+            except exam_m.ExamOrder.DoesNotExist:
+                sys_log('考试订单查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            if len(exam_orders) == 0:
+                sys_log('考试订单查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            else:
+                sys_log('考试订单查询成功', LOG_OK)
+                return exam_orders, SUCCESS
+        except:
+            sys_log('考试订单查询失败', LOG_ERR)
+            return None, FAIL
 
+    @staticmethod
+    def pay_ExamOrder(id) -> int:
+        try:
+            try:
+                exam_order = exam_m.ExamOrder.objects.get(id=id)
+            except exam_m.ExamOrder.DoesNotExist:
+                sys_log('考试订单查询不存在', LOG_ERR)
+                return NOT_EXIST
+            print(exam_order)
+            exam_order.paid = True
+            exam_order.save()
+            sys_log('考试订单支付成功', LOG_OK)
+            return SUCCESS
+        except:
+            sys_log('考试订单支付失败', LOG_ERR)
+            return FAIL
 
 class marking:
 
