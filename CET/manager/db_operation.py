@@ -125,7 +125,7 @@ class user:
 
     @staticmethod
     # id是自增的，不用管
-    def insert_stu(self_num: int, name: str, school: str, password: str, phone: str, email: str) -> tuple[Optional[user_m.Student], int]:
+    def insert_stu(self_num: str, name: str, school: str, password: str, phone: str, email: str) -> tuple[Optional[user_m.Student], int]:
         try:
             check = user_m.Student.objects.get(phone=phone)
             if check:
@@ -167,7 +167,7 @@ class user:
             return None, FAIL
 
     @staticmethod
-    def update_stu(self_number: int, name: str, school: str, password: str, phone: str, email: str, id: int) -> int:
+    def update_stu(self_number: str, name: str, school: str, password: str, phone: str, email: str, id: int) -> int:
         try:
             try:
                 stu = user_m.Student.objects.get(id=id)
