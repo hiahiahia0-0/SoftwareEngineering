@@ -142,6 +142,19 @@ SIMPLEUI_LOGO = 'https://gsp0.baidu.com/5aAHeD3nKhI2p27j8IqW0jdnxx1xbK/tb/editor
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 SIMPLEUI_HOME_INFO = False 
 SIMPLEUI_ANALYSIS = False 
+SIMPLEUI_CONFIG = {
+    'system_keep': True,
+    'menus': [{
+        'app': 'myapp',
+        'name': '试卷管理',
+        'icon': 'fas fa-file-alt',
+        'models': [{
+            'name': '上传文件',
+            'icon': 'fa fa-file',
+            'url': 'manager/manage_paper'
+        }]
+    }]
+}
 
 #  # 隐藏首页的快捷操作和最近动作
 # SIMPLEUI_HOME_QUICK = False 

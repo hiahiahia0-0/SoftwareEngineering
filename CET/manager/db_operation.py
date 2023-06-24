@@ -402,15 +402,15 @@ class exam:
             return None, FAIL
 
     @staticmethod
-    def insert_question(type: int, question: str, answer: str) -> int:
+    def insert_question(type: int, question: str, answer: str) -> tuple[Optional[exam_m.Question], int]:
         try:
             q = exam_m.Question(type=type, question=question, answer=answer)
             q.save()
             sys_log('题目添加成功', LOG_OK)
-            return SUCCESS
+            return q,SUCCESS
         except:
             sys_log('题目添加失败', LOG_ERR)
-            return FAIL
+            return None,FAIL
 
     @staticmethod
     def update_question(id: int, type: int, question: str, answer: str) -> int:
@@ -461,15 +461,15 @@ class exam:
             return None, FAIL
 
     @staticmethod
-    def insert_paper(question_ids: str, type: int) -> int:
+    def insert_paper(question_ids: str, type: int) -> tuple[Optional[exam_m.Paper], int]:
         try:
             paper = exam_m.Paper(question_ids=question_ids, type=type)
             paper.save()
             sys_log('试卷添加成功', LOG_OK)
-            return SUCCESS
+            return paper,SUCCESS
         except:
             sys_log('试卷添加失败', LOG_ERR)
-            return FAIL
+            return None,FAIL
 
     @staticmethod
     def update_paper(id: int, question_ids: str, type: int) -> int:

@@ -6,8 +6,8 @@ from user import models as user_models
 # 题目
 class Question(models.Model):
     id = models.AutoField(primary_key=True)
-    type = models.IntegerField()
-    question = models.CharField(max_length=100)
+    type = models.IntegerField() # 0为选择题，1为填空题
+    question = models.TextField(max_length=1024)
     answer = models.CharField(max_length=50)
 
     class Meta:
