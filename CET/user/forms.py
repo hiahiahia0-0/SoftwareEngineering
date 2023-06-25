@@ -2,6 +2,7 @@ from django import forms
 from .models import Student
 from django.contrib.auth.forms import PasswordChangeForm
 
+
 class ModifyInfoForm(forms.Form):
     name = forms.CharField(label='姓名', max_length=100, required=False)
     school = forms.CharField(label='学校', max_length=100, required=False)
@@ -41,3 +42,7 @@ class ChangePasswordForm(forms.Form):
     old_password = forms.CharField(label='旧密码', widget=forms.PasswordInput)
     new_password1 = forms.CharField(label='新密码', widget=forms.PasswordInput)
     new_password2 = forms.CharField(label='确认密码', widget=forms.PasswordInput)
+
+
+
+

@@ -31,7 +31,25 @@
             width: 30%;
             height: auto;
         }
+        .centered-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px; /* 调整按钮的上边距，可以根据需要进行调整 */
+        }
+        .captcha-text {
+        text-align: center;
+        margin-top: 5px; /* 调整小字与验证码图片之间的上边距，可以根据需要进行调整 */
+        }
+
+        .captcha-link {
+        color: blue; /* 设置小字的颜色为蓝色 */
+        }
     </style>
+    <script>
+        function refreshcheckcode(obj){
+            obj.src="{%url 'user:captcha_img'%}?r="+Math.random()
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -50,14 +68,30 @@
                 <label for="password" class="form-label">密码:</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <div class="mb-3">
-                <label for="captcha" class="form-label">验证码:</label>
-                <input type="text" class="form-control" id="captcha" name="captcha" required>
+            <tr>
+                <td>
+                    <label for="check_code" class="form-label">验证码:</label>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="check_code" name="check_code" placeholder="请输入验证码" required>
+                        <img src="{% url 'user:captcha_img' %}" onclick="refreshcheckcode(this);" class="captcha-image">
+                    </div>
+                </td>
+            </tr>
+            <div class="captcha-text">
+                <p class="text-center mb-0">
+                    <a href="#" class="captcha-link">看不清请点击验证码</a>
+                </p>
             </div>
-            <div class="mb-3">
-                <img src="../static/yanzhengma.png" alt="Captcha Image"class="captcha-image">
+            <div class="more_input clearfix">
+                <a href="{% url 'user:forget_password_tea' %}">忘记密码</a>
             </div>
-            <button type="submit" class="btn btn-primary">登录</button>
+            <div class="text-center centered-button">
+                <button type="submit" class="btn btn-primary">登录</button>
+            </div>
+
+
         </form>
         <p class="text-center mt-3">如果没有账号，请注册：</p>
         <div class="text-center">

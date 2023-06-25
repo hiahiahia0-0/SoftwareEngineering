@@ -47,7 +47,7 @@
         {% if error_message %}
             <div class="alert alert-danger">{{ error_message }}</div>
         {% endif %}
-        <form method="post" action="tea_signin">
+        <form method="post" action="tea_signup">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="username" class="form-label">用户名:</label>
