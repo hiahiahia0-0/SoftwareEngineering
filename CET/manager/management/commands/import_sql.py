@@ -10,19 +10,19 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("\033[1;32mStarting Importing Test SQL file\033[0m")
 
-        stu1,err = db.user.insert_stu(11111, '学生1', 'NKU', '123456',
-                           '111', '1@mail.nankai.edu.cn')
-        stu2,err = db.user.insert_stu(22222, '学生2', 'NKU', '123456',
-                           '112', '2@mail.nankai.edu.cn')
-        stu3,err = db.user.insert_stu(33333, '学生3', 'NKU', '123456',
-                           '113', '3@mail.nankai.edu.cn')
-        stu4,err = db.user.insert_stu(44444, '学生4', 'NKU', '123456',
-                           '114', '4@mail.nankai.edu.cn')
-        stu5,err = db.user.insert_stu(55555, '学生5', 'NKU', '123456',
-                           '115', '5@mail.nankai.edu.cn')
+        stu1,err = db.user.insert_stu('110000200201010000', '学生1', 'NKU', '123456',
+                           '13888888880', '1@mail.nankai.edu.cn')
+        stu2,err = db.user.insert_stu('110000200201010001', '学生2', 'NKU', '123456',
+                           '13888888881', '2@mail.nankai.edu.cn')
+        stu3,err = db.user.insert_stu('110000200201010002', '学生3', 'NKU', '123456',
+                           '13888888882', '3@mail.nankai.edu.cn')
+        stu4,err = db.user.insert_stu('110000200201010003', '学生4', 'NKU', '123456',
+                           '13888888883', '4@mail.nankai.edu.cn')
+        stu5,err = db.user.insert_stu('110000200201010004', '学生5', 'NKU', '123456',
+                           '13888888884', '5@mail.nankai.edu.cn')
 
-        tea1,err = db.user.insert_tea('老师1', '121', '123456')
-        tea2,err = db.user.insert_tea('老师2', '122', '123456')
+        tea1,err = db.user.insert_tea('老师1', '13888888800', '123456')
+        tea2,err = db.user.insert_tea('老师2', '13888888801', '123456')
         print("\033[1;32mFinished Importing Users\033[0m")
 
         db.exam.insert_question(0, '选择题:请选A\nA.请选A\nB.请选A\nC.请选A\nD.请选A\n', 'A')

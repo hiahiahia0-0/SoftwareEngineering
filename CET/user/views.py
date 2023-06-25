@@ -167,7 +167,7 @@ def tea_active(request):
 def stu_all(request):
 
     if request.method == 'POST':
-
+    # 这个if好像永远也进不了，不懂
         login_type = request.POST.get('login_type')
         if login_type == '用户中心':
             return redirect('stu_info')  # 跳转到学生登录页面的URL名称
