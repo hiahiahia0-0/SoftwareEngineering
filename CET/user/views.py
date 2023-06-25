@@ -158,7 +158,7 @@ def tea_signup(request):
             # 注册成功，跳转到用户登录界面
             error_message = None
             # print('数据库添加成功了，下一步应该是重定向到新的界面')
-            return redirect('tea_signin')  # 跳转到教师登录页面的URL名称
+            return redirect('user:tea_signin')  # 跳转到教师登录页面的URL名称
 
         # 注册失败
         error_message = '注册失败'
