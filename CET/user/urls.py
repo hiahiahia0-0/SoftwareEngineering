@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 # 从自己的 app 目录引入 views
 from user import views
-
+app_name = 'user'
 urlpatterns = [
     # 初始界面，选择谁登录
 
@@ -24,6 +24,12 @@ urlpatterns = [
     path('mod_info_tea', views.mod_info_tea, name='mod_info_tea'),
     path('mod_password_stu', views.mod_password_stu, name='mod_password_stu'),
     path('mod_password_tea', views.mod_password_tea, name='mod_password_tea'),
-
+    path('sucess_info', views.sucess_info, name='sucess_info'),
+    path('captcha_img/',views.captcha_img,name='captcha_img'),
+    path('forget_password',views.forget_password,name='forget_password'),
+    path('forget_password_tea',views.forget_password_tea,name='forget_password_tea'),
+    path('send',views.send_checkcode,name='send'),
+    path('modify',views.modify_pwd, name='modify'),
+    path('modify_tea',views.modify_pwd_tea, name='modify_tea'),
 ]
 
