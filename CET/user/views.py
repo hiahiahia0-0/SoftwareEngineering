@@ -62,10 +62,10 @@ def choose_sign(request):
     if request.method == 'POST':
         login_type = request.POST.get('login_type')
         if login_type == 'student':
-            return redirect('stu_signin')  # 跳转到学生登录页面的URL名称
+            return redirect('user:stu_signin')  # 跳转到学生登录页面的URL名称
             # 跳转过去报错，要设置默认的个人信息吗？
         elif login_type == 'teacher':
-            return redirect('tea_signin')  # 跳转到教师登录页面的URL名称
+            return redirect('user:tea_signin')  # 跳转到教师登录页面的URL名称
 
     return render(request, 'users/index.html')
 #登录
@@ -354,7 +354,7 @@ def tea_info(request):
     # 在当前页面显示学生信息
     user = tea_active(request)
     if not user:
-        return redirect('tea_signin')
+        return redirect('user:tea_signin')
     info = {
         "id": user.id,
         "name": user.name,
@@ -388,7 +388,7 @@ def stu_info(request):
     # 在当前页面显示学生信息
     user = stu_active(request)
     if not user:
-        return redirect('stu_signin')
+        return redirect('user:stu_signin')
     info = {
         "id" : user.id,
         "self_number" : user.self_number,
@@ -423,7 +423,7 @@ def mod_info_stu(request):
 
             student.save()
 
-            return redirect('stu_all')  # 重定向到个人信息页面或其他适当的页面
+            return redirect('user:stu_all')  # 重定向到个人信息页面或其他适当的页面
 
     else:
         form = ModifyInfoForm(initial={
@@ -457,7 +457,7 @@ def mod_info_tea(request):
 
             db.user.update_tea(teacher.id, teacher_name, teacher_phone,teacher.password)
 
-            return redirect('tea_info')  # 重定向到个人信息页面或其他适当的页面
+            return redirect('user:tea_info')  # 重定向到个人信息页面或其他适当的页面
 
     else:
         form = ModifyInfoForm(initial={
