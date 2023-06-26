@@ -877,3 +877,8 @@ class marking:
         except:
             sys_log('考试成绩修改失败', LOG_ERR)
             return FAIL
+
+class exam2:
+    def __init__(self):
+        pass
+    
