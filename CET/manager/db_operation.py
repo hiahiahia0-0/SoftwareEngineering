@@ -1,7 +1,7 @@
 from user import models as user_m
 from exam import models as exam_m
 from marking import models as marking_m
-
+from reg import models as reg_m
 import time as t
 from datetime import datetime, time
 from django.utils import timezone
@@ -881,4 +881,161 @@ class marking:
 class exam2:
     def __init__(self):
         pass
-    
+    @staticmethod
+    def insert_exam_arrangement(stuid,examid):
+        try:
+            try:
+                student = user_m.Student.objects.get(id=stuid)
+            except user_m.Student.DoesNotExist:
+                sys_log('外键约束：学生不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：学生', LOG_ERR)
+                return None, FAIL
+            try:
+                exam = exam_m.Exam.objects.get(id=examid)
+            except exam_m.Exam.DoesNotExist:
+                sys_log('外键约束：考试不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：考试', LOG_ERR)
+                return None, FAIL
+            exam_arrangement = reg_m.ExamReg(student_id=student,exam_id=exam)
+            exam_arrangement.save()
+            sys_log('考试安排添加成功', LOG_OK)
+            return exam_arrangement,SUCCESS
+        except:
+            sys_log('考试安排添加失败', LOG_ERR)
+            return None, FAIL
+        
+    @staticmethod
+    def select_exam_arrangement_by_stuid(stuid):
+        try:
+            try:
+                student = user_m.Student.objects.get(id=stuid)
+            except user_m.Student.DoesNotExist:
+                sys_log('外键约束：学生不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：学生', LOG_ERR)
+                return None, FAIL
+            try:
+                exam_arrangement = reg_m.ExamReg.objects.filter(student_id=student)
+            except reg_m.ExamReg.DoesNotExist:
+                sys_log('考试安排查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：考试安排', LOG_ERR)
+                return None, FAIL
+            sys_log('考试安排查询成功', LOG_OK)
+            return exam_arrangement,SUCCESS
+        except:
+            sys_log('考试安排查询失败', LOG_ERR)
+            return None, FAIL
+        
+    @staticmethod
+    def select_exam_arrangement_by_examid(examid):
+        try:
+            try:
+                exam = exam_m.Exam.objects.get(id=examid)
+            except exam_m.Exam.DoesNotExist:
+                sys_log('外键约束：考试不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：考试', LOG_ERR)
+                return None, FAIL
+            try:
+                exam_arrangement = reg_m.ExamReg.objects.filter(exam_id=exam)
+            except reg_m.ExamReg.DoesNotExist:
+                sys_log('考试安排查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：考试安排', LOG_ERR)
+                return None, FAIL
+            sys_log('考试安排查询成功', LOG_OK)
+            return exam_arrangement,SUCCESS
+        except:
+            sys_log('考试安排查询失败', LOG_ERR)
+            return None, FAIL
+        
+    @staticmethod
+    def delete_exam_arrangement_by_id(id):
+        try:
+            try:
+                exam_arrangement = reg_m.ExamReg.objects.get(id=id)
+            except reg_m.ExamReg.DoesNotExist:
+                sys_log('考试安排查询不存在', LOG_ERR)
+                return NOT_EXIST
+            except:
+                sys_log('未知错误：考试安排', LOG_ERR)
+                return FAIL
+            exam_arrangement.delete()
+            sys_log('考试安排删除成功', LOG_OK)
+            return SUCCESS
+        except:
+            sys_log('考试安排删除失败', LOG_ERR)
+            return FAIL
+        
+    @staticmethod
+    def select_exam_arrangement__ongoing_by_stuid(stuid):
+        try:
+            try:
+                student = user_m.Student.objects.get(id=stuid)
+            except user_m.Student.DoesNotExist:
+                sys_log('外键约束：学生不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：学生', LOG_ERR)
+                return None, FAIL
+            try:
+                exam_arrangement = reg_m.ExamReg.objects.filter(student_id=student)
+            except reg_m.ExamReg.DoesNotExist:
+                sys_log('考试安排查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：考试安排', LOG_ERR)
+                return None, FAIL
+            exam_arrangement_ongoing = []
+            for i in exam_arrangement:
+                exam_temp,state=exam.select_exam_by_id(i.exam_id.id)
+                if state==SUCCESS:
+                    exam_temp=exam_temp[0]
+                    if exam_temp.start_time<datetime.datetime.now() and exam_temp.end_time>datetime.datetime.now():
+                        exam_arrangement_ongoing.append(i)
+            sys_log('考试安排查询成功', LOG_OK)
+            return exam_arrangement_ongoing,SUCCESS
+        except:
+            sys_log('考试安排查询失败', LOG_ERR)
+            return None, FAIL
+        
+    @staticmethod
+    def select_exam_arrangement__not_start_by_stuid(stuid):
+        try:
+            try:
+                student = user_m.Student.objects.get(id=stuid)
+            except user_m.Student.DoesNotExist:
+                sys_log('外键约束：学生不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：学生', LOG_ERR)
+                return None, FAIL
+            try:
+                exam_arrangement = reg_m.ExamReg.objects.filter(student_id=student)
+            except reg_m.ExamReg.DoesNotExist:
+                sys_log('考试安排查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：考试安排', LOG_ERR)
+                return None, FAIL
+            exam_arrangement_not_start = []
+            for i in exam_arrangement:
+                exam_temp,state=exam.select_exam_by_id(i.exam_id.id)
+                if state==SUCCESS:
+                    exam_temp=exam_temp[0]
+                    if exam_temp.start_time>datetime.datetime.now():
+                        exam_arrangement_not_start.append(i)
+            sys_log('考试安排查询成功', LOG_OK)
+            return exam_arrangement_not_start,SUCCESS
+        except:
+            sys_log('考试安排查询失败', LOG_ERR)
+            return None, FAIL
