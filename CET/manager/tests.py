@@ -152,3 +152,15 @@ class db_test(TestCase):
         if ok and e:
             for ee in e:
                 print(ee.score)
+
+    def test_reg_exam_arrange(self):
+        db_operation.exam.insert_question(1, '题目1', '选项1')
+        db_operation.exam.insert_paper('1', 1)  # fk
+        start_time = time(9, 0, 0)
+        end_time = time(10, 0, 0)
+        db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
+        db_operation.user.insert_stu(
+            '1', '张三', 'NKU', '123456', '18888888888', '123@qq.com')
+        db_operation.exam2.insert_exam_arrangement(1,1)
+        db_operation.exam2.select_exam_arrangement_by_stuid(1)
+        db_operation.exam2.delete_exam_arrangement_by_id(1)
