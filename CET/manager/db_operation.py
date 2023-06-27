@@ -957,7 +957,24 @@ class exam2:
         except:
             sys_log('考试安排查询失败', LOG_ERR)
             return None, FAIL
-        
+
+    @staticmethod
+    def select_exam_arrangement_by_id(id):
+        try:
+            try:
+                exam_arrangement = reg_m.ExamReg.objects.get(id=id)
+            except reg_m.ExamReg.DoesNotExist:
+                sys_log('考试安排查询不存在', LOG_ERR)
+                return None, NOT_EXIST
+            except:
+                sys_log('未知错误：考试安排', LOG_ERR)
+                return None, FAIL
+            sys_log('考试安排查询成功', LOG_OK)
+            return exam_arrangement,SUCCESS
+        except:
+            sys_log('考试安排查询失败', LOG_ERR)
+            return None, FAIL
+
     @staticmethod
     def delete_exam_arrangement_by_id(id):
         try:
@@ -1000,7 +1017,7 @@ class exam2:
                 exam_temp,state=exam.select_exam_by_id(i.exam_id.id)
                 if state==SUCCESS:
                     exam_temp=exam_temp[0]
-                    if exam_temp.start_time<datetime.datetime.now() and exam_temp.end_time>datetime.datetime.now():
+                    if exam_temp.start_time<datetime.now().time() and exam_temp.end_time>datetime.now().time() and exam_temp.date==datetime.now().date():
                         exam_arrangement_ongoing.append(i)
             sys_log('考试安排查询成功', LOG_OK)
             return exam_arrangement_ongoing,SUCCESS
@@ -1012,7 +1029,9 @@ class exam2:
     def select_exam_arrangement__not_start_by_stuid(stuid):
         try:
             try:
+                #print("examarrange step1")
                 student = user_m.Student.objects.get(id=stuid)
+                #print("examarrange step1 finish")
             except user_m.Student.DoesNotExist:
                 sys_log('外键约束：学生不存在', LOG_ERR)
                 return None, NOT_EXIST
@@ -1020,7 +1039,10 @@ class exam2:
                 sys_log('未知错误：学生', LOG_ERR)
                 return None, FAIL
             try:
+                #print("examarrange step2")
                 exam_arrangement = reg_m.ExamReg.objects.filter(student_id=student)
+                #print(exam_arrangement)
+                #print("examarrange step2 finish")
             except reg_m.ExamReg.DoesNotExist:
                 sys_log('考试安排查询不存在', LOG_ERR)
                 return None, NOT_EXIST
@@ -1029,10 +1051,12 @@ class exam2:
                 return None, FAIL
             exam_arrangement_not_start = []
             for i in exam_arrangement:
+                #print("exam_arrangement is ",i.exam_id.id)
                 exam_temp,state=exam.select_exam_by_id(i.exam_id.id)
+                #print(exam_temp.date)
+                #print(datetime.now().date())
                 if state==SUCCESS:
-                    exam_temp=exam_temp[0]
-                    if exam_temp.start_time>datetime.datetime.now():
+                    if (exam_temp.date==datetime.now().date() and  exam_temp.start_time>datetime.now().time()) or exam_temp.date>datetime.now().date():
                         exam_arrangement_not_start.append(i)
             sys_log('考试安排查询成功', LOG_OK)
             return exam_arrangement_not_start,SUCCESS

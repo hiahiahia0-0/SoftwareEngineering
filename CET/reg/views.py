@@ -27,15 +27,16 @@ def ConfirmRegState(request):
     if state==db.NOT_EXIST:
         return HttpResponse("用户不存在")
     print("stu_id=",stu_info.id)
-    information=db.exam.select_all_exam_by_stu(stu_info.id)
-    if information[1]==db.NOT_EXIST:
+    information=db.exam2.select_exam_arrangement__not_start_by_stuid(stu_info.id)
+    if information[1]==db.NOT_EXIST or information[0]==None or len(information[0])==0:
+        print(information[0])
         print("full information",stu_info.id,stu_info.name,stu_info.school,stu_info.phone,stu_info.email,stu_info.self_number)
         fullinformation={"身份证号":stu_info.self_number,"姓名":stu_info.name,"学校":stu_info.school,"手机号":stu_info.phone,"邮箱":stu_info.email}
         return render(request, 'checkinformation.html',{'n1':fullinformation})
         #已报名
     elif information[1]==db.SUCCESS:
         #弹出一个对话框，提示已报名
-        m={"message":"已报名"}
+        m={"message":"存在已报名的未结束的考试"}
         return render(request, 'regalerts.html',{'n1':m})
     else:
          m={"message":"错误的查询"}
@@ -59,7 +60,9 @@ def SelectSite(request):
         temp["place"]=i.place
         temp["is_online"]=str(i.is_online)
         temp["max_students"]=str(i.max_students)
-        fullinformation.append(temp)
+        if temp["date"] > datetime.now().strftime("%Y-%m-%d") or (
+            temp["date"] == datetime.now().strftime("%Y-%m-%d") and temp["start_time"] > datetime.now().strftime("%H:%M:%S")):
+            fullinformation.append(temp)
 
     print(fullinformation)
     return render(request, 'SelectSite.html',{'n1':fullinformation})
@@ -92,18 +95,17 @@ def TakeAnPosition(request):
                 db.exam.insert_ExamOder(id,stuid,False,0.01)
                 orderinfo,state=db.exam.select_ExamOrder_by_stu(stuid)
                 print("new order id is",orderinfo)
+                return render(request, 'reg_main.html')
             elif state==db.SUCCESS:
-                print("orderinfo is",orderinfo)
-            orders=[]
-            for i in orderinfo:
-                temp={}
-                temp["id"]=i.id
-                temp["exam"]=i.exam
-                temp["student"]=i.student
-                temp["payment"]=i.payment
-                temp["pay_time"]=i.pay_time
-                orders.append(temp)
-            print("全部订单",orders)
+                for i in orderinfo:
+                    if i.paid==False:
+                        print("find an unpaid order")
+                        orderinfo=i
+                        return render(request, 'reg_main.html')
+            print("create new order")
+            db.exam.insert_ExamOder(id,stuid,False,0.01)
+            orderinfo,state=db.exam.select_ExamOrder_by_stu(stuid)
+            print("new order id is",orderinfo)
             return render(request, 'reg_main.html')
 
 def PayOrder(request):
@@ -122,6 +124,7 @@ def PayOrder(request):
                 print(order["订单id"])
                 state=db.exam.pay_ExamOrder(order["订单id"])
                 if state==db.SUCCESS:
+                    state=db.exam2.insert_exam_arrangement(order["考生id"],order["考试id"])
                     return HttpResponse("支付成功！")
                 else:
                     return HttpResponse("支付失败！")
@@ -139,11 +142,15 @@ def CheckOrder(request):
     stuid,state=db.user.select_stu_by_phone(info)
     orderinfo,state=db.exam.select_ExamOrder_by_stu(stuid)
     orders=[]
+    if orderinfo==None:
+        return HttpResponse("未找到订单或订单已过期！")
     for i in orderinfo:
         temp={}
         temp["订单id"]=i.id
         temp["考试名称"]=i.exam.name
+        temp["考试id"]=i.exam.id
         temp["考生名称"]=i.student.name
+        temp["考生id"]=i.student.id
         temp["订单价格"]=i.payment
         temp["支付日期"]=i.pay_time.strftime("%Y-%m-%d")
         temp["是否已付款"]=str(i.paid)
