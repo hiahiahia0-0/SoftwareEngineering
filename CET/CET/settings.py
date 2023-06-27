@@ -92,10 +92,11 @@ DATABASES = {
     { 
         'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
         'NAME': 'cet', # 数据库名称
-        'HOST': '82.156.2.209', # 数据库地址，本机 ip 地址 127.0.0.1 
+        # 'HOST': '82.156.2.209', # 数据库地址，本机 ip 地址 127.0.0.1 
+        'HOST': 'localhost',
         'PORT': 3306, # 端口 
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'mysqlpwd1', # 数据库密码
+        'PASSWORD': 'Dd918273', # 数据库密码
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
             'charset': 'utf8mb4'
@@ -141,6 +142,19 @@ SIMPLEUI_LOGO = 'https://gsp0.baidu.com/5aAHeD3nKhI2p27j8IqW0jdnxx1xbK/tb/editor
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 SIMPLEUI_HOME_INFO = False 
 SIMPLEUI_ANALYSIS = False 
+SIMPLEUI_CONFIG = {
+    'system_keep': True,
+    'menus': [{
+        'app': 'myapp',
+        'name': '试卷管理',
+        'icon': 'fas fa-file-alt',
+        'models': [{
+            'name': '上传文件',
+            'icon': 'fa fa-file',
+            'url': 'manager/manage_paper'
+        }]
+    }]
+}
 
 #  # 隐藏首页的快捷操作和最近动作
 # SIMPLEUI_HOME_QUICK = False 
@@ -163,3 +177,9 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 APPEND_SLASH = False
+
+# 设置媒体文件的URL前缀
+MEDIA_URL = '/media/'
+
+# 设置媒体文件的存储路径
+MEDIA_ROOT = os.path.join(BASE_DIR, 'common')

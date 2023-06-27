@@ -9,7 +9,7 @@ from datetime import datetime,time
 class db_test(TestCase):
     def test_user_stu(self):
         db_operation.user.insert_stu(
-            2, '张三', 'NKU', '123456', '18888888889', '123@qq.com')
+            '2', '张三', 'NKU', '123456', '18888888889', '123@qq.com')
         stu = db_operation.user_m.Student.objects.latest('id')
         db_operation.user.select_stu_by_id(stu.id)
         db_operation.user.select_stu_by_phone(stu.phone)
@@ -40,7 +40,7 @@ class db_test(TestCase):
         end_time = time(10, 0, 0)
         db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
-            1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
+            '1', '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.exam.insert_ExamOder(1, 1, True, 1.0)
         exams, ok = db_operation.exam.select_all_exam_by_stu(1)
         if ok and exams:
@@ -81,7 +81,7 @@ class db_test(TestCase):
         end_time = time(10, 0, 0)
         db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
-            1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
+            '1', '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.exam.insert_ExamOder(1, 1, True, 1.0)
 
         db_operation.exam.select_ExamOder_by_id(1)
@@ -95,7 +95,7 @@ class db_test(TestCase):
         end_time = time(10, 0, 0)
         db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
-            1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
+            '1', '张三', 'NKU', '123456', '18888888888', '123@qq.com')
 
         db_operation.marking.insert_AnswerRecord(1, 1, 1, True)
         db_operation.marking.select_AnswerRecord_by_id(1)
@@ -109,7 +109,7 @@ class db_test(TestCase):
         end_time = time(10, 0, 0)
         db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
-            1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
+            '1', '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.user.insert_tea('李四', '123456', '18888888888')
 
         db_operation.marking.insert_ExamScore(1, 1, 1, 99)
@@ -125,7 +125,7 @@ class db_test(TestCase):
         end_time = time(10, 0, 0)
         db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
-            1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
+            '1', '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.user.insert_tea('李四', '123456', '18888888888')
 
         db_operation.marking.insert_ExamScore(1, 1, 1, 99)
@@ -143,7 +143,7 @@ class db_test(TestCase):
         end_time = time(10, 0, 0)
         db_operation.exam.insert_exam('e1',datetime.now(),start_time,end_time,True,False, 'nku', 1, 1)
         db_operation.user.insert_stu(
-            1, '张三', 'NKU', '123456', '18888888888', '123@qq.com')
+            '1', '张三', 'NKU', '123456', '18888888888', '123@qq.com')
         db_operation.user.insert_tea('李四', '123456', '18888888888')
 
         db_operation.marking.insert_ExamScore(1, 1, 1, 99)
