@@ -72,10 +72,6 @@
 <form method="post" action="{% url 'SelectSite' %}">
     {% csrf_token %}
     <button type="submit">确认信息</button>
-</form>
-<form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit">登出</button>
-</form>
+
 </body>
 </html>

@@ -12,4 +12,5 @@ urlpatterns = [
     path('PayOrder/', views.PayOrder, name='PayOrder'),
     path('CheckOrder/', views.CheckOrder, name='CheckOrder'),
     path('regalerts/', views.regalerts, name='regalerts'),
+    path('pay/', views.pay, name='pay'),
 ]
