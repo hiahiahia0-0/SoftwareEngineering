@@ -177,3 +177,9 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 APPEND_SLASH = False
+
+# 设置媒体文件的URL前缀
+MEDIA_URL = '/media/'
+
+# 设置媒体文件的存储路径
+MEDIA_ROOT = os.path.join(BASE_DIR, 'common')

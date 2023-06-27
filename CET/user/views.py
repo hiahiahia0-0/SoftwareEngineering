@@ -188,13 +188,15 @@ def stu_signup(request):
             error_message = '两次输入的密码不一致'
             return render(request, 'users/stu_signup.html', {'error_message': error_message})
 
-        elif db.user.insert_stu(id_number,username, "",password,phone,"")[1] == db.SUCCESS:
+        elif db.user.insert_stu(id_number , username,"",password,phone,"")[1] == db.SUCCESS:
             # 注册成功，跳转到用户登录界面
             print("user.insert_stu是success")
-            return redirect('stu_signin')  # 跳转到登录页面的URL名称
+            return redirect('user:stu_signin')  # 跳转到登录页面的URL名称
 
         else:
             # 注册失败
+            print(len(id_number))
+            print(type(id_number))
             # 教师添加成功却显示注册失败
             print("进入了注册失败的逻辑")
             error_message = '注册失败'
@@ -564,3 +566,15 @@ def get_stu_exam_grade(request):
 
 # 新的一个界面：教师选择进入哪个子系统
 #教师的子系统分别有：教师个人信息，阅卷系统
+
+
+
+# 装饰的界面
+def introduction(request):
+    return render(request, 'users/introduction.html')
+def English_strategy(request):
+    return render(request, 'users/English_strategy.html')
+def testinfo(request):
+    return render(request, 'users/testinfo.html')
+def testtest(request):
+    return render(request, 'users/test.pdf')

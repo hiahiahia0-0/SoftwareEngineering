@@ -1,6 +1,11 @@
 from django.urls import path, re_path
 # 从自己的 app 目录引入 views
 from user import views
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.views.static import serve
+
 app_name = 'user'
 urlpatterns = [
     # 初始界面，选择谁登录
@@ -31,5 +36,16 @@ urlpatterns = [
     path('send',views.send_checkcode,name='send'),
     path('modify',views.modify_pwd, name='modify'),
     path('modify_tea',views.modify_pwd_tea, name='modify_tea'),
+    path('introduction',views.introduction, name='introduction'),
+    path('English_strategy',views.English_strategy, name='English_strategy'),
+    path('testinfo',views.testinfo, name='testinfo'),
+    path('testtest',views.testtest, name='testtest'),
+    path('test.pdf', serve, {'document_root': settings.MEDIA_ROOT, 'path': 'test.pdf'}, name='test-pdf'),
+    path('examiee.pdf', serve, {'document_root': settings.MEDIA_ROOT, 'path': 'examiee.pdf'}, name='test-pdf'),
+    path('1.pdf', serve, {'document_root': settings.MEDIA_ROOT, 'path': '1.pdf'}, name='test-pdf'),
+    path('2.pdf', serve, {'document_root': settings.MEDIA_ROOT, 'path': '2.pdf'}, name='test-pdf')
 ]
 
+# 配置静态文件URL
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
