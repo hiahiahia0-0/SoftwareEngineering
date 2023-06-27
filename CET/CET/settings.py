@@ -96,7 +96,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': 3306, # 端口 
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'qqwwee123', # 数据库密码
+        'PASSWORD': '123456', # 数据库密码
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
             'charset': 'utf8mb4'

@@ -122,12 +122,7 @@ def PayOrder(request):
                 return HttpResponse("订单已支付！无需再支付")
             else:
                 print(order["订单id"])
-                state=db.exam.pay_ExamOrder(order["订单id"])
-                if state==db.SUCCESS:
-                    state=db.exam2.insert_exam_arrangement(order["考生id"],order["考试id"])
-                    return HttpResponse("支付成功！")
-                else:
-                    return HttpResponse("支付失败！")
+                return render(request, 'pay.html',{'n1':order["订单id"]})
 
         else:
             return HttpResponse("未找到订单或订单已过期！")
@@ -170,4 +165,13 @@ def pay(request):
     info=request.session.get("user_stu")
     if not info:
         return redirect('/user/stu_signin')
-    return render(request, 'pay.html')
+    order = request.POST.get('order')
+    order = json.loads(order)
+    print("order is ",order)
+    state=db.exam.pay_ExamOrder(order)
+    if state==db.SUCCESS:
+        order,state=db.exam.select_ExamOder_by_id(order)
+        state=db.exam2.insert_exam_arrangement(order.student.id,order.exam.id)
+        return HttpResponse("支付成功！")
+    else:
+        return HttpResponse("支付失败！")
