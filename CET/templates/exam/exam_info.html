@@ -1,30 +1,80 @@
 <!DOCTYPE html>
 <html lang="cn">
+
 <head>
     <title>考试信息汇总</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .topbar {
+            background-color: rgba(47, 79, 79, 0.1);
+            height: 60px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topbar-title {
+            font-family: "Arial Black", sans-serif;
+            font-size: 30px;
+            color: #355c7d;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
         .title {
             text-align: center;
         }
+
         table {
             width: 80%;
-            margin: 0 auto;
+            margin: 20px auto;
             border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        th, td {
-            padding: 8px;
+        th,
+        td {
+            padding: 12px;
             text-align: center;
             border-bottom: 1px solid #ddd;
         }
 
         th {
             background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        td:nth-child(1) {
+            text-align: left;
+        }
+
+        .online-exam-link {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .online-exam-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
-    <h1 class="title">您已报名的考试信息汇总表</h1>
+    <div class="topbar">
+        <h1 class="topbar-title">您已报名的考试信息汇总表</h1>
+    </div>
     <table>
         <tr>
             <th>考试名称</th>
@@ -45,11 +95,11 @@
             <td>{{ exam.is_online|yesno:"线上,线下" }}</td>
             <td>
                 {% if exam.is_online and exam.is_beginning %}
-                    <a href="online/{{ exam.id }}">线上正在考试</a>
+                <a href="online/{{ exam.id }}" class="online-exam-link">线上正在考试</a>
                 {% elif exam.is_beginning %}
-                    线下正在考试
+                线下正在考试
                 {% else %}
-                    考试还未开始
+                考试还未开始
                 {% endif %}
             </td>
         </tr>
@@ -57,4 +107,5 @@
 
     </table>
 </body>
+
 </html>
