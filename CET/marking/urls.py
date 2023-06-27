@@ -6,5 +6,6 @@ app_name = 'marking'
 
 urlpatterns = [
     re_path(r'^$|index|marking',views.mark,name='mark'),
-    path('finish/', views.finish),
+    path('mark_exam/', views.mark_exam,name='mark_exam'),
+    path('mark_exam/finish/', views.finish,name='finish')
 ]
