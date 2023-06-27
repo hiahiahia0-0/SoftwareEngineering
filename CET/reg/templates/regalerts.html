@@ -71,11 +71,7 @@
 <form method="post" action="{% url 'reg_main' %}">
     {% csrf_token %}
     <button type="submit">返回主界面</button>
-</form>
-<form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit">登出</button>
-</form>
+
 
 </body>
 </html>

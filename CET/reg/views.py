@@ -165,3 +165,9 @@ def regalerts(request):
     if not info:
         return redirect('/user/stu_signin')
     return render(request, 'regalerts.html')
+
+def pay(request):
+    info=request.session.get("user_stu")
+    if not info:
+        return redirect('/user/stu_signin')
+    return render(request, 'pay.html')
