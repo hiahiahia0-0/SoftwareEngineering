@@ -37,11 +37,11 @@ def finish(request):
 
 def mark(request):
     # session验证
-    # phone_id=request.session.get("user_tea")
-    # print(phone_id)
-    # tea_info,state=db_operation.user.select_tea_by_phone(phone_id)
-    # if state!=db_operation.SUCCESS:
-    #     return HttpResponse("用户不存在")
+    phone_id=request.session.get("user_tea")
+    print(phone_id)
+    tea_info,state=db_operation.user.select_tea_by_phone(phone_id)
+    if state!=db_operation.SUCCESS:
+        return HttpResponse("用户不存在")
 
     exam_ids = []
     marking_exam = marking_m.AnswerRecord.objects.values("exam_id").annotate(exam_num = Count("id"))
