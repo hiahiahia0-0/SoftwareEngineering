@@ -66,6 +66,9 @@ class Command(BaseCommand):
             eid2 = exams[exams.count()-2].id
             db.exam.insert_ExamOder(eid1, stu1_id, True, 25.0)
             db.exam.insert_ExamOder(eid2, stu2_id, False, 0.0)
+            # added reg, stu1 and stu2 registed exam1 and exam2
+            db.exam2.insert_exam_arrangement(stu1_id,eid1)
+            db.exam2.insert_exam_arrangement(stu2_id,eid2)
         else:
             print("\033[1;32mError Importing Exam oder\033[0m")
 
