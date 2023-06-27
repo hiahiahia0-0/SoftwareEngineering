@@ -1,3 +1,8 @@
+import hashlib
+import uuid
+import time,datetime
+
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -7,12 +12,20 @@ from user.models import Teacher
 import random
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_protect
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from manager import db_operation as db
 from .forms import ModifyInfoForm
 from .forms import ModifyInfoForm_tea
+
 from .forms import ChangePasswordForm
+
+from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+
+from common.captcha_4char import captcha
+from io import BytesIO
+from django.core.mail import send_mail
+import requests
 '''
 初始页面 表单 http://127.0.0.1:8000/user/index 选择登陆谁
 学生登陆界面：http://127.0.0.1:8000/user/stu_signin ，输入用户名和密码，正确的话跳转到下一个用户信息页面，不正确的话保持在该页面，但是不知道为啥错误提示不显示
@@ -23,6 +36,20 @@ from django.contrib.auth.decorators import login_required
 后边的个人信息页面还没写，明天再写
 '''
 # 5.24.新问题：注册成功后不会跳转到新页面了
+
+
+
+
+# 新增生成验证码功能
+
+def captcha_img(request):
+    img,code=captcha.veri_code()
+    # 将code保存到session会话中
+    request.session['checkcode']=code
+    stream = BytesIO()
+    img.save(stream,'PNG')
+    return HttpResponse(stream.getvalue())
+
 
 def index(request):
     return render(request,'users/index.html')
@@ -35,10 +62,10 @@ def choose_sign(request):
     if request.method == 'POST':
         login_type = request.POST.get('login_type')
         if login_type == 'student':
-            return redirect('stu_signin')  # 跳转到学生登录页面的URL名称
+            return redirect('user:stu_signin')  # 跳转到学生登录页面的URL名称
             # 跳转过去报错，要设置默认的个人信息吗？
         elif login_type == 'teacher':
-            return redirect('tea_signin')  # 跳转到教师登录页面的URL名称
+            return redirect('user:tea_signin')  # 跳转到教师登录页面的URL名称
 
     return render(request, 'users/index.html')
 #登录
@@ -49,6 +76,16 @@ def tea_signin(request):
     if request.method == 'POST':
         id = request.POST.get('account')
         password = request.POST.get('password')
+        # 获取表单提交的验证码
+        checkcode = request.POST.get('check_code')
+        # 获取session会话中的checkcode
+        request.session.get('checkcode')
+        session_checkcode = request.session.get('checkcode')
+        if checkcode and (checkcode.lower() != session_checkcode.lower()):
+            # 添加错误信息
+            error_message = "验证码填写错误"
+            return render(request, 'users/tea_signin.html', {'error_message': '验证码填写错误'})
+
         tea ,error  = db.user.select_tea_by_phone(id)
         if error == db.NOT_EXIST:
             # 报错信息，用户不存在
@@ -59,7 +96,7 @@ def tea_signin(request):
             db.sys_log("教师登录成功",db.LOG_OK)
             # 会话：记录登陆人
             request.session['user_tea'] = id  # 记录当前用户的身份id
-            return redirect('tea_info')  # 跳转到用户信息页面的URL名称
+            return redirect('user:tea_info')  # 跳转到用户信息页面的URL名称
         else:
             # 密码错误
             db.sys_log("密码错误",db.LOG_ERR)
@@ -74,6 +111,17 @@ def stu_signin(request):
     if request.method == 'POST':
         id = request.POST.get('account')
         password = request.POST.get('password')
+
+        # 获取表单提交的验证码
+        checkcode=request.POST.get('check_code')
+        # 获取session会话中的checkcode
+        request.session.get('checkcode')
+        session_checkcode=request.session.get('checkcode')
+        if checkcode and (checkcode.lower() != session_checkcode.lower()):
+            #添加错误信息
+            error_message = "验证码填写错误"
+            return render(request, 'users/stu_signin.html', {'error_message': '验证码填写错误'})
+
         stu ,error  = db.user.select_stu_by_phone(id)
         if error == db.NOT_EXIST:
             # 报错信息，用户不存在
@@ -84,11 +132,12 @@ def stu_signin(request):
             db.sys_log("学生登录成功",db.LOG_OK)
             # 会话：记录登陆人
             request.session['user_stu']=id #记录当前用户的身份id
-            return redirect('stu_all')  # 跳转到用户信息页面的URL名称
+            return redirect('user:stu_all')  # 跳转到用户信息页面的URL名称
         else:
             # 密码错误
             db.sys_log("密码错误",db.LOG_ERR)
             return render(request,'users/stu_signin.html', {'error_message':'密码错误'})
+
 
     return render(request,'users/stu_signin.html')
 
@@ -105,15 +154,24 @@ def tea_signup(request):
             error_message = '两次输入的密码不一致'
             return render(request, 'users/tea_signup.html', {'error_message': error_message})
 
-        elif db.user.insert_tea(username,phone,password) == db.SUCCESS:
+        if db.user.insert_tea(username,phone,password)[1] == db.SUCCESS:
             # 注册成功，跳转到用户登录界面
-            return redirect('tea_signin')  # 跳转到教师登录页面的URL名称
-        else :
-            # 注册失败
-            error_message = '注册失败'
-            return render(request, 'users/tea_signup.html', {'error_message': error_message})
+            error_message = None
+            # print('数据库添加成功了，下一步应该是重定向到新的界面')
+            return redirect('user:tea_signin')  # 跳转到教师登录页面的URL名称
 
+        # 注册失败
+        error_message = '注册失败'
+        # print('显示注册失败返回到当前页面')
+        return render(request, 'users/tea_signup.html', {'error_message': error_message})
+
+    error_message = None
     return render(request, 'users/tea_signup.html')
+
+
+# 注册成功
+def sucess_info(request):
+    return render(request, 'users/sucess_info.html')
 
 #学生注册
 
@@ -130,15 +188,114 @@ def stu_signup(request):
             error_message = '两次输入的密码不一致'
             return render(request, 'users/stu_signup.html', {'error_message': error_message})
 
-        elif db.user.insert_stu(id_number,username, "",password,phone,"") == db.SUCCESS:
+        elif db.user.insert_stu(id_number , username,"",password,phone,"")[1] == db.SUCCESS:
             # 注册成功，跳转到用户登录界面
-            return redirect('stu_signin')  # 跳转到教师登录页面的URL名称
-            # return render(request, 'users/stu_signin.html')
+            print("user.insert_stu是success")
+            return redirect('user:stu_signin')  # 跳转到登录页面的URL名称
+
         else:
             # 注册失败
+            print(len(id_number))
+            print(type(id_number))
+            # 教师添加成功却显示注册失败
+            print("进入了注册失败的逻辑")
             error_message = '注册失败'
             return render(request, 'users/stu_signup.html', {'error_message': error_message})
+            # return redirect('stu_signin')  # 跳转到教师登录页面的URL名称
     return render(request, 'users/stu_signup.html')
+
+
+
+# 忘记密码
+def forget_password(request):
+    if request.method == 'POST':
+        phone = request.POST.get('account')
+        code = request.POST.get('code')
+        print(phone)
+        if request.session.get('phone') == code:
+            return render(request,'users/modify_pwd.html',{'phone':phone})
+
+    return render(request, 'users/forget_password.html')
+
+def send_checkcode(request):
+    phone = request.GET.get('phone')#这里不知道写的对不对
+    # 请求第三方网易云信的服务
+    # request ---》》当成浏览器
+    url='https://api.netease.im/sms/sendcode.action'
+    headers = {}
+    headers['Content-Type']='application/x-www-form-urlencoded;charset=utf-8'
+    headers['AppKey']='d3ba54c3166e3a9a777de9e37d05146d'
+    Nonce = str(uuid.uuid4()).replace('-','')
+    headers['Nonce']=Nonce
+    CurTime = str(int(time.time()))
+    headers['CurTime']= CurTime
+    AppSecret='403fcd9614f3'
+
+    CheckSum=hashlib.sha1((AppSecret+Nonce+CurTime).encode('utf-8')).hexdigest()
+    headers['CheckSum']= CheckSum
+    response=requests.post(url=url,data={'mobile':phone},headers=headers)
+    print(response.text)
+    json_result = response.json()
+    if json_result.get('code')==200:
+        request.session['phone']=json_result.get('obj')  #{'15620528620:'7899'}
+        return JsonResponse({'msg':'短信发送成功！'})
+    else:
+        return JsonResponse({'msg':'短信发送失败！'})
+
+
+#忘记密码 修改密码
+def modify_pwd(request):
+    pwd = request.POST.get('new_password1')
+    print(pwd)
+    # pwd = '123'
+    phone = request.POST.get('phone')
+    print(phone)
+    # phone='15620524568'
+    # 找到user对象
+    student = Student.objects.filter(phone=phone).first()
+    # new_password = make_password(pwd)
+    student.password = pwd
+    print(student.password)
+    student.save()
+    print('密码修改成功')
+    messages.success(request, '密码修改成功')
+    return render(request, 'users/stu_signin.html', {'success_message': '密码修改成功'})
+
+
+# 忘记密码--教师端
+
+def forget_password_tea(request):
+    if request.method == 'POST':
+        phone = request.POST.get('account')
+        code = request.POST.get('code')
+        print(phone)
+        if request.session.get('phone') == code:
+            return render(request,'users/modify_pwd_tea.html',{'phone':phone})
+
+    return render(request, 'users/forget_password_tea.html')
+# 发送短信的部分仍然使用那个send_checkcode就行
+
+# 忘记密码--修改密码--教师端
+def modify_pwd_tea(request):
+    pwd = request.POST.get('new_password1')
+    print(pwd)
+    # pwd = '123'
+    phone = request.POST.get('phone')
+    print(phone)
+    # phone='15620524568'
+    # 找到user对象
+    # student = Student.objects.filter(phone=phone).first()
+    teacher = Teacher.objects.filter(phone=phone).first()
+    # new_password = make_password(pwd)
+    teacher.password = pwd
+    print(teacher.password)
+    teacher.save()
+    print('密码修改成功')
+    messages.success(request, '密码修改成功')
+    return render(request, 'users/tea_signin.html', {'success_message': '密码修改成功'})
+
+
+
 
 # 学生信息界面
 
@@ -156,10 +313,11 @@ def tea_active(request):
     # return  tea instance
     uid = request.session.get('user_tea')
     print(uid)
-    teacher_Set = Teacher.objects.filter(phone=uid)
-    if teacher_Set.count()==0:
+    teacher_Set,status = db.user.select_tea_by_phone(uid)
+    if teacher_Set and status == db.SUCCESS:
+        return teacher_Set
+    else:
         return None
-    return teacher_Set[0]
 
 
 # 新的一个界面：学生选择进入哪个子系统
@@ -169,18 +327,18 @@ def stu_all(request):
 
         login_type = request.POST.get('login_type')
         if login_type == '用户中心':
-            return redirect('stu_info')  # 跳转到学生登录页面的URL名称
+            return redirect('user:stu_info')  # 跳转到学生登录页面的URL名称
             # 跳转过去报错，要设置默认的个人信息吗？
         elif login_type == '考试报名中心':
-            return redirect('exam_res')  # 跳转到教师登录页面的URL名称
+            return redirect('user:exam_res')  # 跳转到教师登录页面的URL名称
         elif login_type == '线上考试平台':
-            return redirect('exam_take')
+            return redirect('user:exam_take')
         else:
-            return redirect('logout')
+            return redirect('user:logout')
     # 在当前页面显示学生信息
     user = stu_active(request)
     if not user:
-        return redirect('stu_signin')
+        return redirect('user:stu_signin')
     info = {
         "id" : user.id,
         "self_number" : user.self_number,
@@ -198,7 +356,7 @@ def tea_info(request):
     # 在当前页面显示学生信息
     user = tea_active(request)
     if not user:
-        return redirect('tea_signin')
+        return redirect('user:tea_signin')
     info = {
         "id": user.id,
         "name": user.name,
@@ -232,7 +390,7 @@ def stu_info(request):
     # 在当前页面显示学生信息
     user = stu_active(request)
     if not user:
-        return redirect('stu_signin')
+        return redirect('user:stu_signin')
     info = {
         "id" : user.id,
         "self_number" : user.self_number,
@@ -267,7 +425,7 @@ def mod_info_stu(request):
 
             student.save()
 
-            return redirect('stu_all')  # 重定向到个人信息页面或其他适当的页面
+            return redirect('user:stu_all')  # 重定向到个人信息页面或其他适当的页面
 
     else:
         form = ModifyInfoForm(initial={
@@ -292,16 +450,16 @@ def mod_info_tea(request):
     if request.method == 'POST':
         form = ModifyInfoForm_tea(request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and teacher:
             # 更新学生信息，仅更新非空白字段
             if form.cleaned_data['name']:
-                teacher.name = form.cleaned_data['name']
+                teacher_name = form.cleaned_data['name']
             if form.cleaned_data['phone']:
-                teacher.phone = form.cleaned_data['phone']
+                teacher_phone = form.cleaned_data['phone']
 
-            teacher.save()
+            db.user.update_tea(teacher.id, teacher_name, teacher_phone,teacher.password)
 
-            return redirect('tea_info')  # 重定向到个人信息页面或其他适当的页面
+            return redirect('user:tea_info')  # 重定向到个人信息页面或其他适当的页面
 
     else:
         form = ModifyInfoForm(initial={
@@ -358,7 +516,7 @@ def mod_password_stu(request):
 def mod_password_tea(request):
     teacher = tea_active(request)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and teacher:
         form = ChangePasswordForm(request.POST)
         if form.is_valid():
             old_password = form.cleaned_data['old_password']
@@ -375,9 +533,9 @@ def mod_password_tea(request):
                     return render(request, 'users/mod_password_tea.html', {'error_message': '新密码输入不一致'})
 
             # 更新密码
-            teacher.password = form.cleaned_data['new_password1']
-            teacher.save()
-            messages.success(request, '密码修改成功')
+            teacher_password = form.cleaned_data['new_password1']
+            if db.user.update_tea(teacher.id, teacher.name, teacher.phone,teacher_password) == db.SUCCESS:
+                messages.success(request, '密码修改成功')
             return render(request, 'users/tea_signin.html', {'success_message': '密码修改成功'})
     else:
         form = ChangePasswordForm(initial={
@@ -386,15 +544,37 @@ def mod_password_tea(request):
 
     return render(request, 'users/mod_password_tea.html',{'form': form})
 
-
-
-
-
 # 进入到考试报名中心，另一个
 
 def go_to_exam(request):
     request.session['stu_id'] = db.user.select_stu_by_phone(request.session.get('user_stu'))[0].id
     return HttpResponseRedirect(reverse('exam:exam_info'))
 
+# go to marking for teacher
+def go_to_mark(request):
+    return HttpResponseRedirect(reverse('marking:mark'))
+
+def get_stu_exam_grade(request):
+    stu = stu_active(request)
+    if stu:
+        print(stu.id)
+        scores ,err = db.marking.select_all_EScore_by_stu(stu.id)
+        if err == db.SUCCESS and scores:
+            return render(request, 'users/stu_exam_grade.html', {'scores': scores})
+    
+    return HttpResponse("You have no exam")
+
 # 新的一个界面：教师选择进入哪个子系统
 #教师的子系统分别有：教师个人信息，阅卷系统
+
+
+
+# 装饰的界面
+def introduction(request):
+    return render(request, 'users/introduction.html')
+def English_strategy(request):
+    return render(request, 'users/English_strategy.html')
+def testinfo(request):
+    return render(request, 'users/testinfo.html')
+def testtest(request):
+    return render(request, 'users/test.pdf')

@@ -6,7 +6,7 @@ from marking import models as marking_m
 
  
 def finish(request):
-    context          = {}
+    context = {}
     context['finish'] = '阅卷成功！'
     if request.POST:
         context['ans0'] = request.POST['q0']
