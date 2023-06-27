@@ -142,7 +142,7 @@ class user:
             return stu, SUCCESS
         except Exception as e:
             # 显示错误
-            # print(e)
+            print(e)
             sys_log('学生添加失败', LOG_ERR)
             return None, FAIL
 
