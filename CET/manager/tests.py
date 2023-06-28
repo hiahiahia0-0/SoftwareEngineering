@@ -97,9 +97,9 @@ class db_test(TestCase):
         db_operation.user.insert_stu(
             '1', '张三', 'NKU', '123456', '18888888888', '123@qq.com')
 
-        db_operation.marking.insert_AnswerRecord(1, 1, 1, True)
+        db_operation.marking.insert_AnswerRecord(1, 1, 1, 1,"ss",False)
         db_operation.marking.select_AnswerRecord_by_id(1)
-        db_operation.marking.update_AnswerRecord(1, 1, 1, 1, False)
+        db_operation.marking.update_AnswerRecord(1, 1, 1, 1,1,True)
         db_operation.marking.delete_AnswerRecord(1)
 
     def test_marking_ExamScore(self):

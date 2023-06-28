@@ -56,7 +56,7 @@ def upload_que_file( request): # 仅添加题库
             for chunk in file.chunks():
                 f.write(chunk)
         try:
-            with open(filepath, "r") as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 for row in reader:
                     if len(row) != 3:
@@ -92,7 +92,7 @@ def gen_paper(request): # 添到题库并生成试卷
             for chunk in file.chunks():
                 f.write(chunk)
         try:
-            with open(filepath, "r") as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 for row in reader:
                     if len(row) != 3:

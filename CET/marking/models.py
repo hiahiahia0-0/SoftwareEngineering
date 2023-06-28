@@ -9,8 +9,10 @@ class AnswerRecord(models.Model):
     exam = models.ForeignKey(exam_models.Exam, on_delete=models.SET_NULL,null=True)
     student_id = models.ForeignKey(user_models.Student, on_delete=models.SET_NULL,null=True)
     question_id = models.ForeignKey(exam_models.Question, on_delete=models.SET_NULL,null=True)
-    is_right = models.BooleanField()
+    # is_right = models.BooleanField()
+    score = models.IntegerField(null=True) # 对的就有分， 错的0分
     stu_answer = models.TextField(null=True)
+    is_marked = models.BooleanField(null=True)
 
     class Meta:
         verbose_name = '答题情况'
