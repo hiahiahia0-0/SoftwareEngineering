@@ -32,7 +32,7 @@ def exam_info(request):
     exam_arrangement,status2=db_operation.exam2.select_exam_arrangement_by_stuid(stu_info.id)
     # print(exams)
     if status1==db_operation.SUCCESS and status2==db_operation.SUCCESS:
-        return render(request,'exam/exam_info.html',{'exams':exams,'exam_arrangment':exam_arrangement})
+        return render(request,'exam/exam_info.html',{'exams':exams,'exam_arrangment':exam_arrangement[0]})
     else:
         return HttpResponse("您没有报名的考试，请通过报考系统报名后重试！")
     
@@ -78,6 +78,8 @@ def exam_submit(request):
         data=json.loads(request.body)
         exam_id=request.session['exam_id']
         stu_id=request.session['stu_id']
+        arrangement,status=db_operation.exam2.select_exam_arrangement_by_stuid(stu_id)
+        db_operation.exam2.update_is_commit_ok_by_id(arrangement[0].id)
         for key,value in data.items():
             question_id=int(key)
             stu_answer=value
