@@ -2,10 +2,19 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 from manager import db_operation as db
 from datetime import datetime ,time
+import os
 
 
 class Command(BaseCommand):
     help = 'Import Test SQL file'
+
+    def import_questions():
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        question_file = os.path.join(current_dir, '../../samples/que-test-sample.csv')
+
+# 在这里使用 csv_file_path 来读取或处理目标文件
+
+    
 
     def handle(self, *args, **options):
         print("\033[1;32mStarting Importing Test SQL file\033[0m")
