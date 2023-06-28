@@ -1040,3 +1040,22 @@ class exam2:
         except:
             sys_log('考试安排查询失败', LOG_ERR)
             return None, FAIL
+        
+    @staticmethod
+    def update_is_commit_ok_by_id(id):
+        try:
+            try:
+                exam_arrangement = reg_m.ExamReg.objects.get(id=id)
+            except reg_m.ExamReg.DoesNotExist:
+                sys_log('考试安排查询不存在', LOG_ERR)
+                return NOT_EXIST
+            except:
+                sys_log('未知错误：考试安排', LOG_ERR)
+                return FAIL
+            exam_arrangement.is_commit = True
+            exam_arrangement.save()
+            sys_log('考试提交信息更新成功', LOG_OK)
+            return SUCCESS
+        except:
+            sys_log('考试提交信息更新失败', LOG_ERR)
+            return FAIL

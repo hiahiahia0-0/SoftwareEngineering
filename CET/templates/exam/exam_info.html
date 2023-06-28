@@ -95,11 +95,19 @@
             <td>{{ exam.is_online|yesno:"线上,线下" }}</td>
             <td>
                 {% if exam.is_online and exam.is_beginning %}
-                <a href="online/{{ exam.id }}" class="online-exam-link">线上正在考试</a>
-                {% elif exam.is_beginning %}
-                线下正在考试
+                    {% if not exam_arrangment.is_commit %}
+                        <a href="online/{{ exam.id }}" class="online-exam-link">线上正在考试</a>
+                    {% else %}
+                        您已完成线上考试
+                    {% endif %}
+                {% elif not exam.is_online and exam.is_beginning %}
+                    {% if not exam_arrangment.is_commit %}
+                        线下正在考试
+                    {% else %}
+                        您已完成线下考试
+                    {% endif %}
                 {% else %}
-                考试还未开始
+                    考试还未开始
                 {% endif %}
             </td>
         </tr>

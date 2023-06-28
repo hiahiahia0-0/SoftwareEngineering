@@ -6,3 +6,4 @@ class ExamReg(models.Model):
     id = models.AutoField(primary_key=True)
     student_id = models.ForeignKey(user_models.Student, on_delete=models.SET_NULL,null=True)
     exam_id = models.ForeignKey(exam_models.Exam, on_delete=models.SET_NULL,null=True)
+    is_commit = models.BooleanField(default=False)
