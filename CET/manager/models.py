@@ -7,3 +7,4 @@ class TestTable(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=32)
     test = models.DateField(auto_now_add=True)
+    is_commit = models.BooleanField(default=False)
