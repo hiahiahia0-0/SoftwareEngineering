@@ -56,8 +56,8 @@ class ExamOrderAdmin(admin.ModelAdmin):
 class AnswerRecordAdmin(admin.ModelAdmin):
     list_per_page = 10  # 默认为100条
     actions_on_top = True # top actions button
-    list_display = ('id', 'exam', 'student_id', 'question_id','is_right')
-    list_filter = ('exam', 'student_id', 'question_id','is_right')
+    list_display = ('id', 'exam', 'student_id', 'question_id','score','is_marked')
+    list_filter = ('exam', 'student_id', 'question_id','is_marked')
 
 class ExamScoreAdmin(admin.ModelAdmin):
     list_per_page = 10  # 默认为100条

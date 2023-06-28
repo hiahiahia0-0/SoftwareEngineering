@@ -647,7 +647,7 @@ class marking:
             return None, FAIL
 
     @staticmethod
-    def insert_AnswerRecord(exam_id: int, student_id: int, question_id: int, is_right: bool=False,stu_answer=None) -> int:
+    def insert_AnswerRecord(exam_id: int, student_id: int, question_id: int, score: int, stu_answer=None, is_marked: bool=False) -> int:
         try:
             try:
                 e = exam_m.Exam.objects.get(id=exam_id)
@@ -675,7 +675,7 @@ class marking:
                 return FAIL
 
             answer_record = marking_m.AnswerRecord(
-                exam=e, student_id=s, question_id=q, is_right=is_right,stu_answer=stu_answer)
+                exam=e, student_id=s, question_id=q, score=score,stu_answer=stu_answer, is_marked=is_marked)
             answer_record.save()
             sys_log('答题记录添加成功', LOG_OK)
             return SUCCESS
@@ -699,7 +699,7 @@ class marking:
             return FAIL
 
     @staticmethod
-    def update_AnswerRecord(id: int, eaxm_id: int, student_id: int, question_id: int, is_right: bool) -> int:
+    def update_AnswerRecord(id: int, eaxm_id: int, student_id: int, question_id: int, score: int, is_marked: bool) -> int:
         try:
             try:
                 answer_record = marking_m.AnswerRecord.objects.get(id=id)
@@ -735,7 +735,8 @@ class marking:
             answer_record.exam = e
             answer_record.student_id = s
             answer_record.question_id = q
-            answer_record.is_right = is_right
+            answer_record.score = score
+            answer_record.is_marked = is_marked
             answer_record.save()
             sys_log('答题记录修改成功', LOG_OK)
             return SUCCESS
