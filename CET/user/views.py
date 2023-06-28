@@ -552,6 +552,7 @@ def go_to_exam(request):
 
 # go to marking for teacher
 def go_to_mark(request):
+    request.session['tea_id'] = db.user.select_tea_by_phone(request.session.get('user_tea'))[0].id
     return HttpResponseRedirect(reverse('marking:mark'))
 
 def get_stu_exam_grade(request):
