@@ -7,9 +7,12 @@
   <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
         ul {
@@ -52,28 +55,37 @@
         button:hover {
             background-color: #355c7d;
         }
+
+        .topbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
         .topbar-title {
             font-family: "Arial Black", sans-serif;
             font-size: 30px;
             color: #355c7d;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-left:500px;
         }
-        .img{
-            margin-left: 350px;
+
+        .img {
+            margin-left: auto;
+            margin-right: auto;
         }
   </style>
 </head>
 <body>
-    
+
     <div class="topbar">
         <h1 class="topbar-title">支付订单</h1>
     </div>
     <img src="{% static 'pay.jpg' %}" alt="支付图片" class="img">
-  <form method="post" action="{% url 'pay' %}">
-    {% csrf_token %}
-    <input type="hidden" name="order" value="{{ n1 }}">
-    <button type="submit">支付完成</button>
-</form>
+    <form method="post" action="{% url 'pay' %}">
+        {% csrf_token %}
+        <input type="hidden" name="order" value="{{ n1 }}">
+        <button type="submit">支付完成</button>
+    </form>
 </body>
 </html>
