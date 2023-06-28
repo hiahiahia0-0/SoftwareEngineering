@@ -3,20 +3,25 @@ from django.db import connection
 from manager import db_operation as db
 from datetime import datetime ,time
 import os
+import csv
 
 
 class Command(BaseCommand):
     help = 'Import Test SQL file'
-
-    def import_questions():
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        question_file = os.path.join(current_dir, '../../samples/que-test-sample.csv')
-
-# 在这里使用 csv_file_path 来读取或处理目标文件
-
     
 
     def handle(self, *args, **options):
+        def import_questions():
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            question_file = os.path.join(current_dir, '../../../../samples/que-test-sample.csv')
+            with open(question_file,'r',newline='',encoding='utf-8') as file:
+                reader=csv.reader(file)
+                for row in reader:
+                    question_type=int(row[0])
+                    question_text=row[1]
+                    question_anwser=row[2]
+                    db.exam.insert_question(question_type,question_text,question_anwser)
+        
         print("\033[1;32mStarting Importing Test SQL file\033[0m")
 
         stu1,err = db.user.insert_stu('110000200201010000', '学生1', 'NKU', '123456',
@@ -33,15 +38,7 @@ class Command(BaseCommand):
         tea1,err = db.user.insert_tea('老师1', '13888888800', '123456')
         tea2,err = db.user.insert_tea('老师2', '13888888801', '123456')
         print("\033[1;32mFinished Importing Users\033[0m")
-
-        db.exam.insert_question(0, '选择题:请选A\nA.请选A\nB.请选A\nC.请选A\nD.请选A\n', 'A')
-        db.exam.insert_question(0, '选择题:请选B\nA.请选B\nB.请选B\nC.请选B\nD.请选B\n', 'B')
-        db.exam.insert_question(0, '选择题:请选C\nA.请选C\nB.请选C\nC.请选C\nD.请选C\n', 'C')
-        db.exam.insert_question(0, '选择题:请选D\nA.请选D\nB.请选D\nC.请选D\nD.请选D\n', 'D')
-        db.exam.insert_question(1, '填空题:请输入1', '1')
-        db.exam.insert_question(1, '填空题:请输入2', '2')
-        db.exam.insert_question(1, '填空题:请输入3', '3')
-        db.exam.insert_question(1, '填空题:请输入4', '4')
+        import_questions()
         que_id = db.exam_m.Question.objects.latest('id').id
         if que_id:
             db.exam.insert_paper(','.join([str(que_id-7), str(que_id-6), str(que_id-5), str(que_id-4)]), 0)
@@ -58,10 +55,10 @@ class Command(BaseCommand):
         if papers and papers.count()>1 and err:
             pid1 = papers[papers.count()-1].id
             pid2 = papers[papers.count()-2].id
-            start_time = time(9, 0, 0)
-            end_time = time(10, 0, 0)
-            db.exam.insert_exam('eTJU',date_1,start_time,end_time,True,False, 'TJU', pid1, 10)
-            db.exam.insert_exam('eNKU',datetime.now(),start_time,end_time,True,False, 'NKU', pid2, 10)
+            start_time = time(17, 0, 0)
+            end_time = time(18, 0, 0)
+            db.exam.insert_exam('eTJU',date_1,start_time,end_time,True,True, 'TJU', pid1, 10)
+            db.exam.insert_exam('eNKU',datetime.now(),start_time,end_time,True,True, 'NKU', pid2, 10)
         else :
             print("\033[1;31mError Importing Exam\033[0m")
         

@@ -27,6 +27,7 @@ def exam_info(request):
     stu_info,state=db_operation.user.select_stu_by_phone(phone_id)
     if state!=db_operation.SUCCESS:
         return HttpResponse("用户不存在")
+    request.session['stu_id']=stu_info.id
     exams,status1=db_operation.exam.select_all_exam_by_stu(stu_info.id)
     exam_arrangement,status2=db_operation.exam2.select_exam_arrangement_by_stuid(stu_info.id)
     # print(exams)
@@ -74,10 +75,14 @@ def exam_submit(request):
     
     # return render(request,'exam/exam_submitted.html',{'exam':exam,'use_time':use_time})
     if request.method=='POST':
-        
         data=json.loads(request.body)
+        exam_id=request.session['exam_id']
+        stu_id=request.session['stu_id']
         for key,value in data.items():
+            question_id=int(key)
+            stu_answer=value
             print(key,':',value)
+            db_operation.marking.insert_AnswerRecord(exam_id,stu_id,question_id,False,stu_answer)
         return render(request,'exam/exam_submitted.html')
     return HttpResponse("仅支持POST方法")
         
