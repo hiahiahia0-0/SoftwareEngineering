@@ -9,15 +9,15 @@ import json
 sel_ids = []
 
 def finish(request):
-    print("sel_ids:",sel_ids)
-    print("tea_ids:",request.session['tea_id'])
-    print("exam_id:",request.session['exam_id'])
-    print("stu_id:",request.session['stu_id'])
+    # print("sel_ids:",sel_ids)
+    # print("tea_ids:",request.session['tea_id'])
+    # print("exam_id:",request.session['exam_id'])
+    # print("stu_id:",request.session['stu_id'])
 
     if request.method=='POST':
         data=json.loads(request.body)
-        print("formdata:")
-        print(data)
+        # print("formdata:")
+        # print(data)
         tea_id = request.session['tea_id']
         exam_id=request.session['exam_id']
         stu_id=request.session['stu_id']
@@ -37,7 +37,7 @@ def finish(request):
                 db_operation.sys_log('答题记录修改成功', db_operation.LOG_OK)
             except:
                 db_operation.sys_log('答题记录修改失败', db_operation.LOG_ERR)
-        print("sum:",sum)
+        # print("sum:",sum)
 
         #更新成绩表
         db_operation.marking.insert_ExamScore(exam_id=exam_id,student_id=stu_id,teacher_id=tea_id,

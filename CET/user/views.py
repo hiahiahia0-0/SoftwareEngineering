@@ -190,15 +190,15 @@ def stu_signup(request):
 
         elif db.user.insert_stu(id_number , username,"",password,phone,"")[1] == db.SUCCESS:
             # 注册成功，跳转到用户登录界面
-            print("user.insert_stu是success")
+            # print("user.insert_stu是success")
             return redirect('user:stu_signin')  # 跳转到登录页面的URL名称
 
         else:
             # 注册失败
-            print(len(id_number))
-            print(type(id_number))
-            # 教师添加成功却显示注册失败
-            print("进入了注册失败的逻辑")
+            # print(len(id_number))
+            # print(type(id_number))
+            # # 教师添加成功却显示注册失败
+            # print("进入了注册失败的逻辑")
             error_message = '注册失败'
             return render(request, 'users/stu_signup.html', {'error_message': error_message})
             # return redirect('stu_signin')  # 跳转到教师登录页面的URL名称
@@ -211,7 +211,7 @@ def forget_password(request):
     if request.method == 'POST':
         phone = request.POST.get('account')
         code = request.POST.get('code')
-        print(phone)
+        # print(phone)
         if request.session.get('phone') == code:
             return render(request,'users/modify_pwd.html',{'phone':phone})
 
@@ -234,7 +234,7 @@ def send_checkcode(request):
     CheckSum=hashlib.sha1((AppSecret+Nonce+CurTime).encode('utf-8')).hexdigest()
     headers['CheckSum']= CheckSum
     response=requests.post(url=url,data={'mobile':phone},headers=headers)
-    print(response.text)
+    # print(response.text)
     json_result = response.json()
     if json_result.get('code')==200:
         request.session['phone']=json_result.get('obj')  #{'15620528620:'7899'}
@@ -246,18 +246,18 @@ def send_checkcode(request):
 #忘记密码 修改密码
 def modify_pwd(request):
     pwd = request.POST.get('new_password1')
-    print(pwd)
+    # print(pwd)
     # pwd = '123'
     phone = request.POST.get('phone')
-    print(phone)
+    # print(phone)
     # phone='15620524568'
     # 找到user对象
     student = Student.objects.filter(phone=phone).first()
     # new_password = make_password(pwd)
     student.password = pwd
-    print(student.password)
+    # print(student.password)
     student.save()
-    print('密码修改成功')
+    # print('密码修改成功')
     messages.success(request, '密码修改成功')
     return render(request, 'users/stu_signin.html', {'success_message': '密码修改成功'})
 
@@ -268,7 +268,7 @@ def forget_password_tea(request):
     if request.method == 'POST':
         phone = request.POST.get('account')
         code = request.POST.get('code')
-        print(phone)
+        # print(phone)
         if request.session.get('phone') == code:
             return render(request,'users/modify_pwd_tea.html',{'phone':phone})
 
@@ -278,19 +278,19 @@ def forget_password_tea(request):
 # 忘记密码--修改密码--教师端
 def modify_pwd_tea(request):
     pwd = request.POST.get('new_password1')
-    print(pwd)
+    # print(pwd)
     # pwd = '123'
     phone = request.POST.get('phone')
-    print(phone)
+    # print(phone)
     # phone='15620524568'
     # 找到user对象
     # student = Student.objects.filter(phone=phone).first()
     teacher = Teacher.objects.filter(phone=phone).first()
     # new_password = make_password(pwd)
     teacher.password = pwd
-    print(teacher.password)
+    # print(teacher.password)
     teacher.save()
-    print('密码修改成功')
+    # print('密码修改成功')
     messages.success(request, '密码修改成功')
     return render(request, 'users/tea_signin.html', {'success_message': '密码修改成功'})
 
@@ -312,7 +312,7 @@ def stu_active(request):
 def tea_active(request):
     # return  tea instance
     uid = request.session.get('user_tea')
-    print(uid)
+    # print(uid)
     teacher_Set,status = db.user.select_tea_by_phone(uid)
     if teacher_Set and status == db.SUCCESS:
         return teacher_Set
@@ -499,7 +499,7 @@ def mod_password_stu(request):
 
             # 更新密码
             student.password = form.cleaned_data['new_password1']
-            print(student.password)
+            # print(student.password)
             student.save()
             messages.success(request, '密码修改成功')
             return render(request, 'users/stu_signin.html', {'success_message': '密码修改成功'})
@@ -558,7 +558,7 @@ def go_to_mark(request):
 def get_stu_exam_grade(request):
     stu = stu_active(request)
     if stu:
-        print(stu.id)
+        # print(stu.id)
         scores ,err = db.marking.select_all_EScore_by_stu(stu.id)
         if err == db.SUCCESS and scores:
             return render(request, 'users/stu_exam_grade.html', {'scores': scores})
