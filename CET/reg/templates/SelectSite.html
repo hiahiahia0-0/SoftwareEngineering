@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -131,7 +132,7 @@
     <div class="sidebar-title">CET6考试</div>
     <div class="sidebar-username">欢迎 {{ request.session.user_stu }} 访问</div>
     <div class="sidebar-options">
-        <div class="sidebar-option" onclick="toggleSubMenu('userCenterSubMenu')">
+        <div class="sidebar-option" onclick="location.href='/user/stu_all'">
             <i class="fas fa-user-circle"></i>用户中心
             <i class="fas fa-chevron-down"></i>
         </div>
@@ -206,6 +207,21 @@
     document.addEventListener("DOMContentLoaded", function() {
       generateTable();
     });
+
+        function toggleSubMenu(subMenuId) {
+            var subMenu = document.getElementById(subMenuId);
+            var icon = document.querySelector("[onclick=\"toggleSubMenu('" + subMenuId + "')\"] i");
+
+            if (subMenu.style.display === "none") {
+                subMenu.style.display = "block";
+                icon.classList.remove("fa-chevron-down");
+                icon.classList.add("fa-chevron-up");
+            } else {
+                subMenu.style.display = "none";
+                icon.classList.remove("fa-chevron-up");
+                icon.classList.add("fa-chevron-down");
+            }
+        }
   </script>
   
   <button onclick="submitSelection()">提交选择</button>

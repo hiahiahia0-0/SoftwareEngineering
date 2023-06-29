@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -176,6 +177,22 @@
 <form method="post" action="{% url 'SelectSite' %}">
     {% csrf_token %}
     <button type="submit">确认信息</button>
+</form>
+    <script>
+        function toggleSubMenu(subMenuId) {
+            var subMenu = document.getElementById(subMenuId);
+            var icon = document.querySelector("[onclick=\"toggleSubMenu('" + subMenuId + "')\"] i");
 
+            if (subMenu.style.display === "none") {
+                subMenu.style.display = "block";
+                icon.classList.remove("fa-chevron-down");
+                icon.classList.add("fa-chevron-up");
+            } else {
+                subMenu.style.display = "none";
+                icon.classList.remove("fa-chevron-up");
+                icon.classList.add("fa-chevron-down");
+            }
+        }
+    </script>
 </body>
 </html>

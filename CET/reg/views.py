@@ -172,6 +172,7 @@ def pay(request):
     if state==db.SUCCESS:
         order,state=db.exam.select_ExamOder_by_id(order)
         state=db.exam2.insert_exam_arrangement(order.student.id,order.exam.id)
-        return HttpResponse("支付成功！")
+        # return HttpResponse("支付成功！")
+        return render(request, 'payment_success.html')
     else:
         return HttpResponse("支付失败！")

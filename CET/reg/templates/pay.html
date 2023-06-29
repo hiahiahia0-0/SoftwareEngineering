@@ -81,7 +81,7 @@
     <div class="topbar">
         <h1 class="topbar-title">支付订单</h1>
     </div>
-    <img src="{% static 'pay.jpg' %}" alt="支付图片" class="img">
+    <img src="{% static 'QRcode.png' %}" alt="支付图片" class="img">
     <form method="post" action="{% url 'pay' %}">
         {% csrf_token %}
         <input type="hidden" name="order" value="{{ n1 }}">
