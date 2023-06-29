@@ -20,75 +20,123 @@
         </div>
 
         <form  action="finish/" method="post">
-            {% csrf_token %}
-            <div class="card border-secondary text-center ">
-                <div class="card-header">
-                题目1
-                </div>
-                <div class="card-body">
-                <h5 class="card-title">{{ record_list.0.question_id.question }}</h5>
-                <p class="card-text">答案：    {{ record_list.0.stu_answer }}</p>
-                </div>
-                <div class="card-footer text-muted">
-                    请判断学生作答情况:<br>
-                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                        <input type="radio" class="btn-check" autocomplete="off" id="b0_1" 
-                        name="q0" value=1 checked>
-                        <label class="btn btn-outline-secondary" for="b0_1">正确</label>
-                        <input type="radio" class="btn-check" autocomplete="off" id="b0_2" 
-                        name="q0" value=0>
-                        <label class="btn btn-outline-secondary" for="b0_2">错误 </label> 
-                    </div>
-                </div>
+        {% for record in record0_list %}
+        <div class="card border-secondary text-center ">
+            <div class="card-header">
+                选择题{{ forloop.counter }}
             </div>
-            <br></br>
-            <div class="card border-secondary text-center" >
-                <div class="card-header">
-                题目2
-                </div>
-                <div class="card-body">
-                <h5 class="card-title">{{ record_list.1.question_id.question }}</h5>
-                <p class="card-text">答案：    {{ record_list.1.stu_answer }}</p>  
-                </div>
-                <div class="card-footer text-muted">
-                    请判断学生作答情况:<br>
-                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                        <input type="radio" class="btn-check" autocomplete="off" id="b1_1" 
-                        name="q1" value=1 checked>
-                        <label class="btn btn-outline-secondary" for="b1_1">正确</label>
-                        <input type="radio" class="btn-check" autocomplete="off" id="b1_2" 
-                        name="q1" value=0>
-                        <label class="btn btn-outline-secondary" for="b1_2">错误 </label> 
-                    </div>
-                </div>
+            <div class="card-body">
+            <h5 class="card-title">{{ record.question_id.question }}</h5>
+            <p class="card-text">学生答案：    {{ record.stu_answer }}</p>
             </div>
-            <br></br>
-            <div class="card border-secondary text-center ">
-                <div class="card-header">
-                题目3
-                </div>
-                <div class="card-body">
-                <h5 class="card-title">{{ record_list.2.question_id.question }}</h5>
-                <p class="card-text">答案：    {{ record_list.2.stu_answer }}</p>
-                </div>
-                <div class="card-footer text-muted">
-                    请判断学生作答情况:<br>
-                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                        <input type="radio" class="btn-check" autocomplete="off" id="b2_1" 
-                        name="q2" value=1 checked>
-                        <label class="btn btn-outline-secondary" for="b2_1">正确</label>
-                        <input type="radio" class="btn-check" autocomplete="off" id="b2_2" 
-                        name="q2" value=0>
-                        <label class="btn btn-outline-secondary" for="b2_2">错误 </label> 
-                    </div>
-                </div>
+            <div class="card-footer text-muted">
+                请判断学生作答情况:<br>
+                <textarea name="mark{{ forloop.counter }},{{record.id}}" 
+                rows="1" class="essay-textarea" placeholder="请输入阅卷分数">0</textarea>
             </div>
-            <br></br>
-            <div class="d-grid gap-2">
-                <input class="btn btn-secondary" type="submit" value="确认">
-              </div>
-            
-        </form>
+        </div>
+        <br></br>
+        {% endfor %}
+        {% for record in record1_list %}
+        <div class="card border-secondary text-center ">
+            <div class="card-header">
+                非选择题{{ forloop.counter }}
+            </div>
+            <div class="card-body">
+            <h5 class="card-title">{{ record.question_id.question }}</h5>
+            <p class="card-text">学生答案：    {{ record.stu_answer }}</p>
+            </div>
+            <div class="card-footer text-muted">
+                请判断学生作答情况:<br>
+                <textarea name="mark{{ forloop.counter }},{{record.id}}" 
+                rows="1" class="essay-textarea" placeholder="请输入阅卷分数">0</textarea>
+            </div>
+        </div>
+        <br></br>
+        {% endfor %}
 
+        <div class="d-grid gap-2">
+            <input id="submit-button" class="btn btn-secondary" type="submit" value="提交">
+        </div>
+        </form>
+        
+        <script>
+            var submitButton = document.getElementById('submit-button');
+    
+            submitButton.addEventListener('click', function () {
+                submitMark();
+            });
+    
+    
+            function submitMark() {
+                submitButton.disabled = true;
+                submitButton.textContent = '已提交';
+
+                // 获取阅卷结果数据
+                var formData = {};
+                
+                var scoreInputs = document.querySelectorAll('textarea[name^="mark"]');
+                for (var j = 0; j < scoreInputs.length; j++) {
+                    console.log(scoreInputs[j].name);
+                    console.log(scoreInputs[j].value);
+                    var name=scoreInputs[j].name;
+                    var match=name.match(/(\d+)$/);
+                    scoreInputs[j].name=match[1];
+                    console.log(scoreInputs[j].name);
+                    formData[scoreInputs[j].name]=scoreInputs[j].value;
+                }
+    
+                // 获取CSRF令牌的值
+                var csrfToken = getCookie('csrftoken');
+    
+                // 构建请求头
+                var headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+                headers.append('X-CSRFToken', csrfToken);
+    
+                // 发送POST请求
+                fetch('/marking/mark_exam/finish/', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(formData),
+                })
+                .then(response => {
+                    // 处理响应
+                    if (response.ok) {
+                        // 提交成功
+                        console.log('提交成功！');
+                        alert('提交成功\n')
+                        window.location.href='/user/tea_info';
+                    } else {
+                        // 提交失败
+                        console.log('提交失败！');
+                        alert('提交失败\n')
+                        window.location.href='/marking/';
+                    }
+                })
+                .catch(error => {
+                    console.error('发生错误:', error);
+                });
+    
+            }
+    
+    
+            // 获取指定名称的cookie的值
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                    }
+                }
+                return cookieValue;
+            }
+
+        </script>
    </body>
 </html>

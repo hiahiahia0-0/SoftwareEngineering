@@ -14,7 +14,7 @@ def veri_code(length=4,width=160,height=40,size=28):
     image = Image.new('RGB',(width,height),(255,255,255))
     # 创建Font对象
     file = os.path.dirname(os.path.abspath(__file__))
-    font = ImageFont.truetype(f'{file}/common/captcha_4char/COOPBL.TTF',size)
+    font = ImageFont.truetype(f'E:\Project\SoftwareEngineering\SoftwareEngineering\CET/common/captcha_4char/COOPBL.TTF',size)
     # 创建Draw对象
     draw = ImageDraw.Draw(image)
     # 随机颜色填充每个像素
