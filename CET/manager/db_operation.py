@@ -448,7 +448,7 @@ class exam:
     @staticmethod
     def select_paper_by_id(id) -> Tuple[Optional[exam_m.Paper], int]:
         try:
-            print(id)
+            # print(id)
             try:
                 paper = exam_m.Paper.objects.get(id=id)
             except exam_m.Paper.DoesNotExist:
@@ -588,7 +588,7 @@ class exam:
             except exam_m.ExamOrder.DoesNotExist:
                 sys_log('考试订单查询不存在', LOG_ERR)
                 return NOT_EXIST
-            print(exam_order)
+            # print(exam_order)
             exam_order.paid = True
             exam_order.save()
             sys_log('考试订单支付成功', LOG_OK)
@@ -887,7 +887,7 @@ class exam2:
             return None, FAIL
         
     @staticmethod
-    def select_exam_arrangement_by_stuid(stuid):
+    def select_exam_arrangement_by_stuid(stuid) -> Tuple[Optional[models.QuerySet[reg_m.ExamReg]], int]:
         try:
             try:
                 student = user_m.Student.objects.get(id=stuid)
