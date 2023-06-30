@@ -16,7 +16,7 @@ ini:
 	python manage.py createsuperuser
 
 test:
-	python .\manage.py import_sql
+	python manage.py import_sql
 
 clean:
-	python .\manage.py clear_sql
+	python manage.py clear_sql
