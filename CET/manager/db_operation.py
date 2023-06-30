@@ -448,7 +448,7 @@ class exam:
     @staticmethod
     def select_paper_by_id(id) -> Tuple[Optional[exam_m.Paper], int]:
         try:
-            print(id)
+            # print(id)
             try:
                 paper = exam_m.Paper.objects.get(id=id)
             except exam_m.Paper.DoesNotExist:
@@ -588,7 +588,7 @@ class exam:
             except exam_m.ExamOrder.DoesNotExist:
                 sys_log('考试订单查询不存在', LOG_ERR)
                 return NOT_EXIST
-            print(exam_order)
+            # print(exam_order)
             exam_order.paid = True
             exam_order.save()
             sys_log('考试订单支付成功', LOG_OK)
@@ -647,7 +647,7 @@ class marking:
             return None, FAIL
 
     @staticmethod
-    def insert_AnswerRecord(exam_id: int, student_id: int, question_id: int, is_right: bool) -> int:
+    def insert_AnswerRecord(exam_id: int, student_id: int, question_id: int, score: int, stu_answer=None, is_marked: bool=False) -> int:
         try:
             try:
                 e = exam_m.Exam.objects.get(id=exam_id)
@@ -675,7 +675,7 @@ class marking:
                 return FAIL
 
             answer_record = marking_m.AnswerRecord(
-                exam=e, student_id=s, question_id=q, is_right=is_right)
+                exam=e, student_id=s, question_id=q, score=score,stu_answer=stu_answer, is_marked=is_marked)
             answer_record.save()
             sys_log('答题记录添加成功', LOG_OK)
             return SUCCESS
@@ -699,7 +699,7 @@ class marking:
             return FAIL
 
     @staticmethod
-    def update_AnswerRecord(id: int, eaxm_id: int, student_id: int, question_id: int, is_right: bool) -> int:
+    def update_AnswerRecord(id: int, eaxm_id: int, student_id: int, question_id: int, score: int, is_marked: bool) -> int:
         try:
             try:
                 answer_record = marking_m.AnswerRecord.objects.get(id=id)
@@ -735,7 +735,8 @@ class marking:
             answer_record.exam = e
             answer_record.student_id = s
             answer_record.question_id = q
-            answer_record.is_right = is_right
+            answer_record.score = score
+            answer_record.is_marked = is_marked
             answer_record.save()
             sys_log('答题记录修改成功', LOG_OK)
             return SUCCESS
@@ -886,7 +887,7 @@ class exam2:
             return None, FAIL
         
     @staticmethod
-    def select_exam_arrangement_by_stuid(stuid):
+    def select_exam_arrangement_by_stuid(stuid) -> Tuple[Optional[models.QuerySet[reg_m.ExamReg]], int]:
         try:
             try:
                 student = user_m.Student.objects.get(id=stuid)
@@ -971,7 +972,7 @@ class exam2:
             return FAIL
         
     @staticmethod
-    def select_exam_arrangement__ongoing_by_stuid(stuid):
+    def select_exam_arrangement__ongoing_by_stuid(stuid): # 找到最近的考试
         try:
             try:
                 student = user_m.Student.objects.get(id=stuid)
@@ -992,7 +993,7 @@ class exam2:
             exam_arrangement_ongoing = []
             for i in exam_arrangement:
                 exam_temp,state=exam.select_exam_by_id(i.exam_id.id)
-                if state==SUCCESS:
+                if state==SUCCESS and exam_temp!=None:
                     exam_temp=exam_temp[0]
                     if exam_temp.start_time<datetime.now().time() and exam_temp.end_time>datetime.now().time() and exam_temp.date==datetime.now().date():
                         exam_arrangement_ongoing.append(i)
@@ -1021,7 +1022,7 @@ class exam2:
                 #print(exam_arrangement)
                 #print("examarrange step2 finish")
             except reg_m.ExamReg.DoesNotExist:
-                sys_log('考试安排查询不存在', LOG_ERR)
+                sys_log('外键约束: 考试安排查询不存在', LOG_ERR)
                 return None, NOT_EXIST
             except:
                 sys_log('未知错误：考试安排', LOG_ERR)
@@ -1032,7 +1033,7 @@ class exam2:
                 exam_temp,state=exam.select_exam_by_id(i.exam_id.id)
                 #print(exam_temp.date)
                 #print(datetime.now().date())
-                if state==SUCCESS:
+                if state==SUCCESS and exam_temp:
                     if (exam_temp.date==datetime.now().date() and  exam_temp.start_time>datetime.now().time()) or exam_temp.date>datetime.now().date():
                         exam_arrangement_not_start.append(i)
             sys_log('考试安排查询成功', LOG_OK)
@@ -1040,3 +1041,22 @@ class exam2:
         except:
             sys_log('考试安排查询失败', LOG_ERR)
             return None, FAIL
+        
+    @staticmethod
+    def update_is_commit_ok_by_id(id):
+        try:
+            try:
+                exam_arrangement = reg_m.ExamReg.objects.get(id=id)
+            except reg_m.ExamReg.DoesNotExist:
+                sys_log('考试安排查询不存在', LOG_ERR)
+                return NOT_EXIST
+            except:
+                sys_log('未知错误：考试安排', LOG_ERR)
+                return FAIL
+            exam_arrangement.is_commit = True
+            exam_arrangement.save()
+            sys_log('考试提交信息更新成功', LOG_OK)
+            return SUCCESS
+        except:
+            sys_log('考试提交信息更新失败', LOG_ERR)
+            return FAIL

@@ -16,7 +16,7 @@ def reg_main(request):
     info=request.session.get("user_stu")
     if not info:
         return redirect('/user/stu_signin')
-    print(info)
+    # print(info)
     return render(request, 'reg_main.html')
 
 def ConfirmRegState(request):
@@ -26,11 +26,11 @@ def ConfirmRegState(request):
     stu_info,state=db.user.select_stu_by_phone(info)
     if state==db.NOT_EXIST:
         return HttpResponse("用户不存在")
-    print("stu_id=",stu_info.id)
+    # print("stu_id=",stu_info.id)
     information=db.exam2.select_exam_arrangement__not_start_by_stuid(stu_info.id)
     if information[1]==db.NOT_EXIST or information[0]==None or len(information[0])==0:
-        print(information[0])
-        print("full information",stu_info.id,stu_info.name,stu_info.school,stu_info.phone,stu_info.email,stu_info.self_number)
+        # print(information[0])
+        # print("full information",stu_info.id,stu_info.name,stu_info.school,stu_info.phone,stu_info.email,stu_info.self_number)
         fullinformation={"身份证号":stu_info.self_number,"姓名":stu_info.name,"学校":stu_info.school,"手机号":stu_info.phone,"邮箱":stu_info.email}
         return render(request, 'checkinformation.html',{'n1':fullinformation})
         #已报名
@@ -64,7 +64,7 @@ def SelectSite(request):
             temp["date"] == datetime.now().strftime("%Y-%m-%d") and temp["start_time"] > datetime.now().strftime("%H:%M:%S")):
             fullinformation.append(temp)
 
-    print(fullinformation)
+    # print(fullinformation)
     return render(request, 'SelectSite.html',{'n1':fullinformation})
 
 def TakeAnPosition(request):
@@ -76,30 +76,30 @@ def TakeAnPosition(request):
     if request.method == 'POST':
         selectedData = request.POST.get('selectedData')  # 获取选中行的索引
         if selectedData:
-            print(selectedData)
+            # print(selectedData)
             selectedData=json.loads(selectedData)
             #向数据库申请一个考位，并返回申请成功与否，这里不搞这么复杂，直接生成订单
             #向数据库申请创建一个订单，订单状态为未支付，订单号为随机生成的
             id=selectedData["id"]
-            print("exam id is",id)
+            # print("exam id is",id)
             stuid,state=db.user.select_stu_by_phone(info)
             if state==db.NOT_EXIST:
                 return HttpResponse("用户不存在")
             stuid=stuid.id
-            print("stuid is",stuid)
+            # print("stuid is",stuid)
             #首先看有没有未支付的订单
             orderinfo,state=db.exam.select_ExamOrder_by_stu(stuid)
             if state==db.NOT_EXIST:
                 #没有未支付的订单，创建一个新的订单
-                print("create new order")
+                # print("create new order")
                 db.exam.insert_ExamOder(id,stuid,False,0.01)
                 orderinfo,state=db.exam.select_ExamOrder_by_stu(stuid)
-                print("new order id is",orderinfo)
+                # print("new order id is",orderinfo)
                 return render(request, 'reg_main.html')
             elif state==db.SUCCESS:
                 for i in orderinfo:
                     if i.paid==False:
-                        print("find an unpaid order")
+                        # print("find an unpaid order")
                         orderinfo=i
                         return render(request, 'reg_main.html')
             print("create new order")
@@ -114,14 +114,14 @@ def PayOrder(request):
         return HttpResponse("请先登录!")
     if request.method == 'POST':
         order=request.POST.get('selectedData')
-        print("支付的订单是",order)
+        # print("支付的订单是",order)
         if order:
             order=json.loads(order)
             #todo,向数据库申请支付一个订单，订单状态为已支付，订单号为随机生成的
             if(order["是否已付款"]=="True"):
                 return HttpResponse("订单已支付！无需再支付")
             else:
-                print(order["订单id"])
+                # print(order["订单id"])
                 return render(request, 'pay.html',{'n1':order["订单id"]})
 
         else:
@@ -150,7 +150,7 @@ def CheckOrder(request):
         temp["支付日期"]=i.pay_time.strftime("%Y-%m-%d")
         temp["是否已付款"]=str(i.paid)
         orders.append(temp)
-    print("全部订单",orders)
+    # print("全部订单",orders)
     if orders!=[]:
         return render(request, 'checkorder.html', {'n1': orders})
     else:
@@ -167,11 +167,12 @@ def pay(request):
         return redirect('/user/stu_signin')
     order = request.POST.get('order')
     order = json.loads(order)
-    print("order is ",order)
+    # print("order is ",order)
     state=db.exam.pay_ExamOrder(order)
     if state==db.SUCCESS:
         order,state=db.exam.select_ExamOder_by_id(order)
         state=db.exam2.insert_exam_arrangement(order.student.id,order.exam.id)
-        return HttpResponse("支付成功！")
+        # return HttpResponse("支付成功！")
+        return render(request, 'payment_success.html')
     else:
         return HttpResponse("支付失败！")

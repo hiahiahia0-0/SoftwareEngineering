@@ -23,30 +23,35 @@ def exam_info(request):
     # 模拟session
     # request.session['stu_id']='123456';
     phone_id=request.session.get("user_stu")
-    print(phone_id)
+    # print(phone_id)
     stu_info,state=db_operation.user.select_stu_by_phone(phone_id)
     if state!=db_operation.SUCCESS:
         return HttpResponse("用户不存在")
-    exams,status=db_operation.exam.select_all_exam_by_stu(stu_info.id)
+    request.session['stu_id']=stu_info.id
+    exams,status1=db_operation.exam.select_all_exam_by_stu(stu_info.id)
+    exam_arrangement,status2=db_operation.exam2.select_exam_arrangement_by_stuid(stu_info.id)
     # print(exams)
-    if status==db_operation.SUCCESS:
-        return render(request,'exam/exam_info.html',{'exams':exams})
+    if (exam_arrangement):
+        if status1==db_operation.SUCCESS and status2==db_operation.SUCCESS and exam_arrangement[0]:
+            return render(request,'exam/exam_info.html',{'exams':exams,'exam_arrangment':exam_arrangement[0]})
+        else :
+            return HttpResponse("您未报名考试，或者考试订单未支付")
     else:
         return HttpResponse("您没有报名的考试，请通过报考系统报名后重试！")
     
 
 def exam_detail(request,exam_id):
-    print(exam_id)
+    # print(exam_id)
     request.session['exam_id']=exam_id
     exam,status=db_operation.exam.select_exam_by_id(exam_id)
     if status!=db_operation.SUCCESS:
         return HttpResponse("在线考试载入错误，请稍后重试！")
-    print(exam)
+    # print(exam)
     # paper,status=db_operation.exam.select_paper_by_id(exam.paper)
     # if status!=db_operation.SUCCESS:
     #     return HttpResponse("在线考试试卷载入错误，请稍后重试！")   
     paper=exam.paper
-    print(paper)
+    # print(paper)
     questions=paper.question_ids
     # questions=questions[1:-1] # 去除首尾的"["、"]"
     items=questions.split(',')
@@ -74,8 +79,15 @@ def exam_submit(request):
     # return render(request,'exam/exam_submitted.html',{'exam':exam,'use_time':use_time})
     if request.method=='POST':
         data=json.loads(request.body)
+        exam_id=request.session['exam_id']
+        stu_id=request.session['stu_id']
+        arrangement,status=db_operation.exam2.select_exam_arrangement_by_stuid(stu_id)
+        db_operation.exam2.update_is_commit_ok_by_id(arrangement[0].id)
         for key,value in data.items():
-            print(key,':',value)
+            question_id=int(key)
+            stu_answer=value
+            # print(key,':',value)
+            db_operation.marking.insert_AnswerRecord(exam_id,stu_id,question_id,False,stu_answer)
         return render(request,'exam/exam_submitted.html')
     return HttpResponse("仅支持POST方法")
         

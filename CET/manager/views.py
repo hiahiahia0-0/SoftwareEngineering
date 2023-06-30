@@ -21,7 +21,7 @@ def add_item(request):  # test func
         test = request.POST.get('test')
         item = manager_m.TestTable(name=name, test=test)
         item.save()
-        print("Item added successfully")
+        # print("Item added successfully")
         return HttpResponse('<script>alert("Item added successfully")</script>')
     else:
         return render(request, 'test.html')
@@ -46,17 +46,17 @@ def manage_paper(request): # 添加试卷
 def upload_que_file( request): # 仅添加题库
     if request.method == "POST":
         file = request.FILES.get("my-file")
-        print("\033[32mupload_que_file:%s\033[0m" % file.name)
         if file is None:
             return render(request, 'manager/manage_paper.html', {'ret_msg_q': "文件为空"})
         if not file.name.endswith(".csv"):
             return render(request, 'manager/manage_paper.html', {'ret_msg_q': "只能上传 CSV 文件"})
+        print("\033[32mupload_que_file:%s\033[0m" % file.name)
         filepath = file.name
         with open(filepath, "wb") as f:
             for chunk in file.chunks():
                 f.write(chunk)
         try:
-            with open(filepath, "r") as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 for row in reader:
                     if len(row) != 3:
@@ -81,18 +81,20 @@ def gen_paper(request): # 添到题库并生成试卷
     '''
     if request.method == "POST":
         file = request.FILES.get("my-file")
-        print("\033[32mupload_que_file:%s\033[0m" % file.name)
         if file is None:
-            return HttpResponse("文件为空", status=400)
+            # return HttpResponse("文件为空", status=400)
+            return render(request, 'manager/manage_paper.html', {'ret_msg_p': "文件为空"})
         if not file.name.endswith(".csv"):
-            return HttpResponse("只能上传 CSV 文件", status=400)
+            # return HttpResponse("只能上传 CSV 文件", status=400)
+            return render(request, 'manager/manage_paper.html', {'ret_msg_p': "只能上传 CSV 文件"})
+        print("\033[32mupload_que_file:%s\033[0m" % file.name)
         filepath = file.name
         que_nums = ''
         with open(filepath, "wb") as f:
             for chunk in file.chunks():
                 f.write(chunk)
         try:
-            with open(filepath, "r") as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 reader = csv.reader(f)
                 for row in reader:
                     if len(row) != 3:

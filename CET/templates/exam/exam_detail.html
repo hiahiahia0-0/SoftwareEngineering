@@ -121,17 +121,7 @@
                 </div>
             </div>
             {% endfor %}
-            {% for question0 in question0s %}
-            <div class="question">
-                <label class="question-label">{{ forloop.counter }}.选择题 {{ forloop.counter }}</label>
-                <div class="question-content">
-                    <label>{{ question0.1 }}.</label>
-                </div>
-                <div class="options">
-                    <input type="text" name="question{{ forloop.counter }},{{question0.0}}" placeholder="输入选项字母作为答案">
-                </div>
-            </div>
-            {% endfor %}
+
         {% else %}
         <div class="question">
             <label class="question-label">没有选择题!</label>
@@ -200,7 +190,7 @@
             document.getElementById('timeout-modal').style.display = 'block';
 
             // 获取答题结果数据
-            var formData = new FormData();
+            var formData = {};
             var time=100*60-minutes*60-seconds;
             var time_use='用时:'+(Math.floor(time/60)).toString()+'分'+(time%60).toString()+'秒';
             
@@ -208,17 +198,21 @@
             for (var i = 0; i < questionInputs.length; i++) {
                 console.log(questionInputs[i].name);
                 console.log(questionInputs[i].value);
-                formData.append(questionInputs[i].name, questionInputs[i].value);
+                var name=questionInputs[i].name;
+                var match=name.match(/(\d+)$/);
+                questionInputs[i].name=match[1];
+                formData[questionInputs[i].name]=questionInputs[i].value;
             }
             var essayInputs = document.querySelectorAll('textarea[name^="question"]');
             for (var j = 0; j < essayInputs.length; j++) {
-                console.log(essayInputs[i].name);
-                console.log(essayInputs[i].value);
-                formData.append(essayInputs[j].name, essayInputs[j].value);
+                console.log(essayInputs[j].name);
+                console.log(essayInputs[j].value);
+                var name=essayInputs[j].name;
+                var match=name.match(/(\d+)$/);
+                essayInputs[j].name=match[1];
+                formData[essayInputs[j].name]=essayInputs[j].value;
             }
-            for (var entry of formData.entries()) {
-                console.log(entry[0] + ': ' + entry[1]);
-            }
+
               // 获取CSRF令牌的值
             var csrfToken = getCookie('csrftoken');
 
