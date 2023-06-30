@@ -3,6 +3,10 @@
 
 ## 开始
 ### 经典安装
+环境要求:
+- python 3.7 及以上
+- mysql 5.6及以上
+
 1. 执行如下命令安装python依赖
 `pip install -r requirements.txt`
 2. 创建如下的数据库(也可以自己更改settings.py)
@@ -19,7 +23,8 @@
 
 
 ### docker部署
-仅需要有docker环境即可
+
+仅需要有docker和mysql环境即可
 
 然后执行如下命令
 `sudo docker build -t django_project .`
