@@ -4,7 +4,7 @@ MAINTAINER Juice
 
 RUN mkdir /app
 
-WORKDIR /app
+WORKDIR /app/CET/
 
 COPY . /app
 
@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt -i  https://mirrors.aliyun.com/pypi/simple/
 
 EXPOSE 8000
 
-CMD python manage.py runserver 0:8000
+
