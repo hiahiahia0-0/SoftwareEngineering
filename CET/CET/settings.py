@@ -91,12 +91,12 @@ DATABASES = {
     'default': 
     { 
         'ENGINE': 'django.db.backends.mysql',    # 数据库引擎
-        'NAME': 'cet', # 数据库名称
-        # 'HOST': '82.156.2.209', # 数据库地址，本机 ip 地址 127.0.0.1 
-        'HOST': 'localhost',
+        'NAME': 'cet_2', # 数据库名称
+        'HOST': '82.156.2.209', # 数据库地址，本机 ip 地址 127.0.0.1 
+        #'HOST': 'localhost',
         'PORT': 3306, # 端口 
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': '123456', # 数据库密码
+        'PASSWORD': 'mysqlpwd1', # 数据库密码
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"',
             'charset': 'utf8mb4'
